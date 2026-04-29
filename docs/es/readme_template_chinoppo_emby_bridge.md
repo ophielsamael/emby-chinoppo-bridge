@@ -1,0 +1,1 @@
+# readme_template_chinoppo_emby_bridge
