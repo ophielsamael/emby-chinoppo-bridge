@@ -18,13 +18,6 @@
 | **Navegación Móvil** | Limitada | **Full Responsive (Sliding Drawer)** |
 | **Configuración** | Archivo manual | **Dashboard Web Completo** |
 
-### 🚀 ¿Qué se ha mejorado en la V3?
-*   **💎 Estética Denon/Emby**: Un diseño de interfaz inspirado en los equipos de gama alta, con fondos dinámicos y micro-animaciones.
-*   **🛠️ Motor de Auto-Curación**: Lógica inteligente que detecta fallos en el arranque de archivos pesados y los soluciona sin intervención del usuario.
-*   **📊 Consola Pro**: Un visualizador de registros profesional que permite pausar, filtrar y ajustar la verbosidad en tiempo real.
-*   **🌍 Multi-Idioma Nativo**: Selector dinámico de idioma (ES/EN) integrado en la cabecera.
-*   **🐳 Migración a Docker**: Arquitectura basada en contenedores para máxima estabilidad, eliminando la necesidad de reinicios manuales constantes.
-
 ---
 
 ## 🐳 ¿Por qué Docker? (La gran diferencia con la v2)
@@ -37,12 +30,19 @@ A diferencia de la versión original (que era un script de Python manual), Xnopp
 
 ---
 
+### 🚀 ¿Qué se ha mejorado en la V3?
+*   **💎 Estética Denon/Emby**: Un diseño de interfaz inspirado en los equipos de gama alta, con fondos dinámicos y micro-animaciones.
+*   **🛠️ Motor de Auto-Curación**: Lógica inteligente que detecta fallos en el arranque de archivos pesados y los soluciona sin intervención del usuario.
+*   **📊 Consola Pro**: Un visualizador de registros profesional que permite pausar, filtrar y ajustar la verbosidad en tiempo real.
+*   **🌍 Multi-Idioma Nativo**: Selector dinámico de idioma (ES/EN) integrado en la cabecera.
+*   **🐳 Migración a Docker**: Arquitectura basada en contenedores para máxima estabilidad, eliminando la necesidad de reinicios manuales constantes.
+
 ---
 
 ## 🚀 Entorno de Pruebas Certificado
 Esta versión ha sido testeada exhaustivamente en la siguiente configuración, garantizando estabilidad total:
 *   **Servidor**: Synology DS423+ (Docker).
-*   **Reproductor Origen**: Nvidia Shield TV Pro.
+*   **Reproductor Origen**: Nvidia Shield TV Pro / Chinoppo M901.
 *   **Receptor AV**: Denon AVC-X3800H.
 *   **Control de Acceso**: Probado con éxito desde navegadores **Chrome** y dispositivos **móviles** (iOS/Android).
 
@@ -60,18 +60,22 @@ Esta versión ha sido testeada exhaustivamente en la siguiente configuración, g
 
 ## 🐋 Guía de Instalación Paso a Paso
 
-1.  **Clonar el Repositorio**:
-    ```bash
-    git clone https://github.com/ophielsamael/emby-chinoppo-bridge.git
-    cd emby-chinoppo-bridge
-    ```
+> [!IMPORTANT]
+> Debes tener **Docker** y **Docker Compose** instalados en tu servidor (Synology, Unraid, Linux, etc.) antes de comenzar.
+
+1.  **Preparar la Carpeta**:
+    Crea una carpeta en tu servidor (ej: `/docker/xnoppo`) y sube todos los archivos de este repositorio dentro de ella.
 2.  **Preparar la Configuración**:
-    Crea un archivo `config.json` básico o deja que el sistema lo genere tras el primer inicio.
-3.  **Desplegar con Docker**:
+    El sistema generará un `config.json` automático, pero asegúrate de que el archivo `docker-compose.yml` esté presente en la raíz.
+3.  **Desplegar el Contenedor**:
+    Abre una terminal en esa carpeta y ejecuta:
     ```bash
-    docker-compose up -d --build
+    sudo docker-compose up -d --build
     ```
-4.  **Acceso Inicial**: Entra en `http://TU_IP:8090`. Se abrirá el asistente de bienvenida para seleccionar idioma y tema.
+    *(Se te pedirá la **contraseña de administrador** para autorizar la instalación).*
+    
+    *Este comando creará un entorno virtual aislado (contenedor) donde correrá Xnoppo sin ensuciar tu sistema operativo.*
+4.  **Acceso Inicial**: Entra en `http://TU_IP:8090`. Se abrirá el asistente de bienvenida "Elite" para seleccionar idioma y tema.
 
 ---
 
@@ -97,7 +101,7 @@ Para un funcionamiento "Elite", utiliza estas configuraciones probadas:
 ## 📱 Control Remoto Virtual: Tu Plan B
 ¿Se te han acabado las pilas del mando original? ¿No encuentras el mando del Chinoppo? No hay problema. 
 
-Xnoppo Elite V3 incluye un **Control Remoto Virtual** totalmente funcional y optimizado para móviles. 
+Xnoppo Elite V3 incluye un **Control Remoto Virtual** totalmente funcional y optimizado para mobiles. 
 
 ![Remote Control Screenshot](static/img/remote_preview.png) *(Placeholder: Añade aquí tu captura)*
 

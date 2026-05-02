@@ -17,13 +17,6 @@
 | **Mobile Navigation** | Limited | **Full Responsive (Sliding Drawer)** |
 | **Configuration** | Manual file | **Full Web Dashboard** |
 
-### 🚀 What's New in V3?
-*   **💎 Denon/Emby Aesthetics**: A UI design inspired by high-end hardware, featuring dynamic backgrounds and micro-animations.
-*   **🛠️ Auto-Healing Engine**: Intelligent logic that detects failed starts for heavy files and fixes them without user intervention.
-*   **📊 Pro Console**: A professional log viewer that allows pausing, filtering, and adjusting verbosity in real-time.
-*   **🌍 Native Multi-Language**: Dynamic language selector (ES/EN) integrated into the header.
-*   **🐳 Docker Migration**: Container-based architecture for maximum stability, eliminating the need for constant manual restarts.
-
 ---
 
 ## 🐳 Why Docker? (The major difference from v2)
@@ -36,10 +29,19 @@ Unlike the original version (which was a manual Python script), Xnoppo Elite V3 
 
 ---
 
+### 🚀 What's New in V3?
+*   **💎 Denon/Emby Aesthetics**: A UI design inspired by high-end hardware, featuring dynamic backgrounds and micro-animations.
+*   **🛠️ Auto-Healing Engine**: Intelligent logic that detects failed starts for heavy files and fixes them without user intervention.
+*   **📊 Pro Console**: A professional log viewer that allows pausing, filtering, and adjusting verbosity in real-time.
+*   **🌍 Native Multi-Language**: Dynamic language selector (ES/EN) integrated into the header.
+*   **🐳 Docker Migration**: Container-based architecture for maximum stability, eliminating the need for constant manual restarts.
+
+---
+
 ## 🚀 Certified Test Environment
 This version has been extensively tested in the following configuration, guaranteeing total stability:
 *   **Server**: Synology DS423+ (Docker).
-*   **Source Player**: Nvidia Shield TV Pro.
+*   **Source Player**: Nvidia Shield TV Pro / Chinoppo M901.
 *   **AV Receiver**: Denon AVC-X3800H.
 *   **Access Control**: Successfully tested from **Chrome** browsers and **mobile** devices (iOS/Android).
 
@@ -57,18 +59,22 @@ This version has been extensively tested in the following configuration, guarant
 
 ## 🐋 Step-by-Step Installation Guide
 
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/ophielsamael/emby-chinoppo-bridge.git
-    cd emby-chinoppo-bridge
-    ```
+> [!IMPORTANT]
+> You must have **Docker** and **Docker Compose** installed on your server (Synology, Unraid, Linux, etc.) before starting.
+
+1.  **Prepare the Folder**:
+    Create a folder on your server (e.g., `/docker/xnoppo`) and upload all the files from this repository into it.
 2.  **Prepare Configuration**:
-    Create a basic `config.json` file or let the system generate it after the first run.
-3.  **Deploy with Docker**:
+    The system will generate an automatic `config.json`, but ensure the `docker-compose.yml` file is present in the root.
+3.  **Deploy the Container**:
+    Open a terminal in that folder and run:
     ```bash
-    docker-compose up -d --build
+    sudo docker-compose up -d --build
     ```
-4.  **Initial Access**: Enter `http://YOUR_IP:8090`. The welcome wizard will open to select language and theme.
+    *(You will be prompted for your **administrator password** to authorize the installation).*
+
+    *This command will create an isolated virtual environment (container) where Xnoppo will run without cluttering your operating system.*
+4.  **Initial Access**: Enter `http://YOUR_IP:8090`. The "Elite" welcome wizard will open to select language and theme.
 
 ---
 
