@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xnoppo Elite - Control Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.active {
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        .status-dot.inactive {
+            background-color: #64748b;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    
+    <nav class="flex justify-between items-center mb-12">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i data-lucide="command" class="text-white w-5 h-5"></i>
+            </div>
+            <h1 class="text-xl font-bold tracking-widest">XNOPPO <span class="text-indigo-400">ELITE</span></h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-xs text-slate-400 font-bold tracking-widest uppercase flex items-center gap-2">
+                <span class="status-dot active animate-pulse"></span> Sistema En Línea
+            </span>
+            <a href="/" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors ml-4 border border-white/10">
+                <i data-lucide="settings" class="w-4 h-4 text-slate-300"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto">
+        <!-- HEADER -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black mb-4 glow-text">Control Central</h2>
+            <p class="text-slate-400 text-lg">Tu sistema de cine en casa está sincronizado y listo para la acción.</p>
+        </div>
+
+        <!-- DEVICES GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- OPPO CARD -->
+            <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group">
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                        <i data-lucide="disc" class="w-6 h-6"></i>
+                    </div>
+                    <span class="status-dot active"></span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">Oppo Player</h3>
+                    <p class="text-xs text-slate-400 font-mono">{{ config.get('Oppo_IP', 'No configurado') }}</p>
+                </div>
+            </div>
+
+            <!-- EMBY CARD -->
+            <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group">
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+                        <i data-lucide="server" class="w-6 h-6"></i>
+                    </div>
+                    <span class="status-dot active"></span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">Emby Server</h3>
+                    <p class="text-xs text-slate-400 truncate">{{ config.get('emby_server', 'No configurado') }}</p>
+                </div>
+            </div>
+
+            <!-- AVR CARD -->
+            <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group {{ '' if config.get('AV') else 'opacity-50' }}">
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
+                        <i data-lucide="speaker" class="w-6 h-6"></i>
+                    </div>
+                    <span class="status-dot {{ 'active' if config.get('AV') else 'inactive' }}"></span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">Receptor AV</h3>
+                    <p class="text-xs text-slate-400 uppercase">{{ config.get('AV_model', 'Desactivado') }}</p>
+                </div>
+            </div>
+
+            <!-- TV CARD -->
+            <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group {{ '' if config.get('TV') else 'opacity-50' }}">
+                <div class="flex justify-between items-start">
+                    <div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
+                        <i data-lucide="tv" class="w-6 h-6"></i>
+                    </div>
+                    <span class="status-dot {{ 'active' if config.get('TV') else 'inactive' }}"></span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">TV / Proyector</h3>
+                    <p class="text-xs text-slate-400 uppercase">{{ config.get('TV_model', 'Desactivado') }}</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ACTIONS / LOGS PLACEHOLDER -->
+        <div class="mt-12 glass-card p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-xl">Actividad del Sistema</h3>
+                <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-bold rounded-full">EN ESPERA</span>
+            </div>
+            <div class="bg-black/30 rounded-xl p-6 border border-white/5 font-mono text-sm text-slate-400">
+                <p>> Iniciando puente Emby-Oppo...</p>
+                <p>> Escuchando eventos WebSocket...</p>
+                <p class="text-indigo-400 animate-pulse">> Esperando reproducción...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

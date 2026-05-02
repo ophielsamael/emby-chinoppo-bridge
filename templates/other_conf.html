@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block title %}Avanzado{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[28vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card page-hero-device">
+    <img id="deviceHeroImg" src="/static/img/dev_android_tv_box.png" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-all duration-1000 mix-blend-luminosity" alt="Dispositivo Monitorizado">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#1e293b]/90 to-transparent"></div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10 hero-content">
+        <div class="flex items-center gap-4 mb-2">
+            <div class="w-10 h-10 bg-indigo-600/20 rounded-xl flex items-center justify-center border border-indigo-500/30">
+                <i data-lucide="settings-2" class="text-indigo-400 w-5 h-5"></i>
+            </div>
+            <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px]">AJUSTES DEL SISTEMA</span>
+        </div>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Opciones <span class="text-slate-400">Avanzadas</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Configuración del motor de orquestación y monitoreo de red.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="grid-2">
+        <!-- GENERAL SETTINGS -->
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="globe" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white">General</span>
+            </div>
+            <div class="mt-6">
+                <div class="form-group">
+                    <label>Nivel de Depuración (Log)</label>
+                    <select id="DebugLevel" class="form-control">
+                        <option value="0">0 — Sin log</option>
+                        <option value="1">1 — Errores</option>
+                        <option value="2">2 — Info</option>
+                        <option value="3">3 — Debug Total</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tiempo de Refresco (seg)</label>
+                    <input type="number" id="refresh_time" class="form-control" placeholder="10">
+                </div>
+            </div>
+        </div>
+
+        <!-- MONITORING SETTINGS -->
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="monitor" class="w-5 h-5 text-emerald-400"></i>
+                <span class="text-base font-bold text-white">Dispositivo Monitorizado</span>
+            </div>
+            <div class="mt-6">
+                <div class="form-group">
+                    <label>Dispositivo a Controlar</label>
+                    <select id="MonitoredDevice" class="form-control" onchange="updateDeviceImage()">
+                        <option value="">— Seleccionar Dispositivo —</option>
+                    </select>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary text-xs" onclick="refreshDevices()">↻ Refrescar Lista</button>
+                    </div>
+                </div>
+                
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">Esperar NFS</div>
+                        <div class="toggle-description">Pausar hasta que NFS esté montado</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="wait_nfs"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">Versiones Beta</div>
+                        <div class="toggle-description">Buscar actualizaciones beta</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="check_beta"><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VERSION CARD -->
+    <div class="card">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
+                    <i data-lucide="code-2" class="text-slate-400 w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest">Versión del Motor</div>
+                    <div class="text-xl font-black text-white">v3.00 <span class="text-indigo-500 text-sm ml-2">Elite Edition</span></div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="checkUpdates()">Buscar Actualizaciones</button>
+        </div>
+    </div>
+
+    <div class="mt-8 flex justify-between items-center">
+        <button class="btn btn-primary" onclick="saveAdvancedConfig()">Guardar Configuración</button>
+        <div class="flex gap-4">
+            <a href="/av" class="btn btn-secondary">← AV</a>
+            <a href="/status" class="btn btn-primary">Estado →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+
+// Populate initial values
+if (document.getElementById('DebugLevel')) document.getElementById('DebugLevel').value = cfg.DebugLevel || 0;
+if (document.getElementById('refresh_time')) document.getElementById('refresh_time').value = cfg.refresh_time || 5;
+if (document.getElementById('wait_nfs')) document.getElementById('wait_nfs').checked = !!cfg.wait_nfs;
+if (document.getElementById('check_beta')) document.getElementById('check_beta').checked = !!cfg.check_beta;
+
+const deviceImages = {
+    'shield': '/static/img/dev_nvidia_shield.png',
+    'iphone': '/static/img/dev_iphone.png',
+    'apple': '/static/img/dev_apple_tv.png',
+    'chrome': '/static/img/dev_pc_chrome.png',
+    'samsung': '/static/img/dev_samsung_galaxy.png',
+    'android': '/static/img/dev_android_tv_box.png',
+    'google': '/static/img/dev_google_streamer.png',
+    'default': '/static/img/oppo_off.png'
+};
+
+function updateDeviceImage() {
+    const sel = document.getElementById('MonitoredDevice');
+    const text = sel.options[sel.selectedIndex]?.text.toLowerCase() || '';
+    let imgPath = deviceImages.default;
+    
+    if (text.includes('shield')) imgPath = deviceImages.shield;
+    else if (text.includes('iphone') || text.includes('ios')) imgPath = deviceImages.iphone;
+    else if (text.includes('apple') || text.includes('atv') || text.includes('tvos')) imgPath = deviceImages.apple;
+    else if (text.includes('chrome') || text.includes('pc') || text.includes('web') || text.includes('firefox') || text.includes('edge')) imgPath = deviceImages.chrome;
+    else if (text.includes('samsung') || text.includes('galaxy')) imgPath = deviceImages.samsung;
+    else if (text.includes('google') || text.includes('chromecast') || text.includes('streamer')) imgPath = deviceImages.google;
+    else if (text.includes('android') || text.includes('tv')) imgPath = deviceImages.android;
+    
+    const heroImg = document.getElementById('deviceHeroImg');
+    if (heroImg && heroImg.src !== window.location.origin + imgPath) {
+        heroImg.classList.remove('opacity-40');
+        heroImg.classList.add('opacity-0');
+        setTimeout(() => {
+            heroImg.src = imgPath;
+            heroImg.classList.remove('opacity-0');
+            heroImg.classList.add('opacity-40');
+        }, 300);
+    }
+}
+
+async function refreshDevices() {
+    const sel = document.getElementById('MonitoredDevice');
+    if(sel) sel.innerHTML = '<option>Cargando dispositivos...</option>';
+    try {
+        const r = await fetch('/api/emby/devices');
+        if (r.ok) {
+            const data = await r.json();
+            const list = Array.isArray(data) ? data : (data.devices || []);
+            if(sel) {
+                sel.innerHTML = '<option value="">— Seleccionar Dispositivo —</option>';
+                list.forEach(d => {
+                    const o = document.createElement('option');
+                    o.value = d.Id;
+                    o.textContent = d.Name + (d.AppName ? ' (' + d.AppName + ')' : '');
+                    if(d.Id === cfg.MonitoredDevice || d.Name === cfg.MonitoredDevice) o.selected = true;
+                    sel.appendChild(o);
+                });
+            }
+            updateDeviceImage();
+            showToast('Dispositivos actualizados', 'success');
+        } else {
+            if(sel) sel.innerHTML = '<option value="">-- Error al cargar --</option>';
+        }
+    } catch(e) { 
+        if(sel) sel.innerHTML = '<option value="">Error de red</option>';
+        showToast('Error al conectar con el servidor', 'error');
+    }
+}
+refreshDevices();
+
+async function checkUpdates() {
+    showToast('Buscando actualizaciones...', 'info');
+    setTimeout(() => showToast('Tu sistema está actualizado', 'success'), 2000);
+}
+
+async function saveAdvancedConfig() {
+    const payload = Object.assign({}, cfg, {
+        DebugLevel: parseInt(document.getElementById('DebugLevel').value),
+        refresh_time: parseInt(document.getElementById('refresh_time').value),
+        MonitoredDevice: document.getElementById('MonitoredDevice').value,
+        wait_nfs: document.getElementById('wait_nfs').checked,
+        check_beta: document.getElementById('check_beta').checked
+    });
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}

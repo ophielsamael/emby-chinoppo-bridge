@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}TV Control{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[32vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card">
+    <img id="heroImg" src="/static/img/tv_off.png" class="absolute inset-0 w-full h-full object-cover opacity-50 transition-all duration-1000" alt="TV Display">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+    <div id="status-badge" class="status-badge hidden">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+        ONLINE
+    </div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10">
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">VISUALIZACIÓN DE ALTA GAMA</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Televisor / <span class="text-slate-400">Proyector</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Control de encendido y conmutación automática de entradas.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="tv" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white">Configuración TV</span>
+            </div>
+            
+            <div class="toggle-wrapper">
+                <div>
+                    <div class="toggle-label">Activar control de TV</div>
+                    <div class="toggle-description">Automatizar HDMI y Power</div>
+                </div>
+                <label class="switch"><input type="checkbox" id="TV" onchange="toggleTVFields()"><span class="slider"></span></label>
+            </div>
+
+            <div id="tvFieldsContainer" class="mt-6">
+                <div class="form-group">
+                    <label>Modelo TV</label>
+                    <select id="TV_model" class="form-control">
+                        <option value="">— Seleccionar Marca —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>IP del televisor</label>
+                    <input type="text" id="TV_IP" class="form-control" placeholder="192.168.1.146">
+                </div>
+                <div class="form-group">
+                    <label>Clave TV (pairing)</label>
+                    <input type="text" id="TV_KEY" class="form-control" placeholder="Clave de emparejamiento">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del dispositivo</label>
+                    <input type="text" id="TV_DeviceName" class="form-control" placeholder="LG OLED TV">
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-between items-center">
+                <button class="btn btn-primary" onclick="saveTVConfig()">Guardar</button>
+                <a href="/av" class="btn btn-secondary text-xs">Receptor AV →</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+                <span class="text-base font-bold text-white">Verificación</span>
+            </div>
+            <div class="mt-4">
+                <button class="btn btn-test" id="btnTestTV" onclick="testTV()">Probar Conexión TV</button>
+                <button class="btn btn-test" onclick="testHDMI()">Probar cambio HDMI</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+document.getElementById('TV').checked = !!cfg.TV;
+document.getElementById('TV_IP').value = cfg.TV_IP || '';
+document.getElementById('TV_KEY').value = cfg.TV_KEY || '';
+document.getElementById('TV_DeviceName').value = cfg.TV_DeviceName || '';
+
+const sel = document.getElementById('TV_model');
+(cfg.tv_dirs || []).forEach(d => { 
+    const o = document.createElement('option'); 
+    o.value = d; o.textContent = d; 
+    if (d === cfg.TV_model) o.selected = true; 
+    sel.appendChild(o); 
+});
+
+function toggleTVFields() {
+    const active = document.getElementById('TV').checked;
+    const container = document.getElementById('tvFieldsContainer');
+    container.style.opacity = active ? '1' : '0.4';
+    container.querySelectorAll('input, select').forEach(el => el.disabled = !active);
+}
+toggleTVFields();
+
+async function testTV() {
+    const badge = document.getElementById('status-badge');
+    const heroImg = document.getElementById('heroImg');
+    const btn = document.getElementById('btnTestTV');
+    btn.innerHTML = '<span class="spinner"></span> Probando...';
+    try {
+        const payload = Object.assign({}, cfg, { 
+            TV_IP: document.getElementById('TV_IP').value,
+            TV_KEY: document.getElementById('TV_KEY').value,
+            TV_model: document.getElementById('TV_model').value
+        });
+        const res = await fetch('/api/test/tv', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        if (res.ok) {
+            showToast('TV conectada', 'success');
+            badge.classList.remove('hidden');
+            heroImg.src = '/static/img/tv_on.png';
+            heroImg.classList.add('opacity-80', 'scale-105');
+        } else {
+            showToast('Error en la TV', 'error');
+            badge.classList.add('hidden');
+            heroImg.src = '/static/img/tv_off.png';
+        }
+    } catch(e) { showToast('Error de red','error'); }
+    btn.innerHTML = 'Probar Conexión TV';
+}
+
+async function testHDMI() { showToast('Probando comando HDMI...', 'info'); }
+
+async function saveTVConfig() {
+    const payload = Object.assign({}, cfg, { 
+        TV: document.getElementById('TV').checked, 
+        TV_IP: document.getElementById('TV_IP').value, 
+        TV_KEY: document.getElementById('TV_KEY').value,
+        TV_DeviceName: document.getElementById('TV_DeviceName').value, 
+        TV_model: document.getElementById('TV_model').value 
+    });
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}

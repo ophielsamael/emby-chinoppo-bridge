@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}Emby Server{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[32vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card page-hero-device">
+    <img id="statusImg" src="/static/img/nas_off.png" class="absolute inset-0 w-full h-full object-cover opacity-50 transition-all duration-1000" alt="Emby Server">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+    <div id="status-badge" class="status-badge hidden">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+        ONLINE
+    </div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10 hero-content">
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">GESTIÓN DE CONTENIDOS</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Emby <span class="text-slate-400">Server</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Conecta tu servidor multimedia para la sincronización de metadatos.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="grid-2">
+        <div class="card relative overflow-hidden" style="min-height: 400px;">
+            <div class="relative z-10">
+                <div class="card-title flex items-center gap-2 mb-4">
+                    <i data-lucide="server" class="w-5 h-5 text-indigo-400"></i>
+                    <span class="text-base font-bold text-white">Servidor Emby</span>
+                </div>
+                
+                <div class="mt-6">
+                    <div class="flex gap-2 mb-5">
+                        <div class="w-1/4">
+                            <label>Protocolo</label>
+                            <select id="emby_protocol" class="form-control px-2">
+                                <option value="http://">http://</option>
+                                <option value="https://">https://</option>
+                            </select>
+                        </div>
+                        <div class="w-1/2">
+                            <label>IP / Host</label>
+                            <input type="text" id="emby_ip" class="form-control" placeholder="192.168.1.100">
+                        </div>
+                        <div class="w-1/4">
+                            <label>Puerto</label>
+                            <input type="number" id="emby_port" class="form-control px-2" placeholder="8096" value="8096">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de usuario</label>
+                        <input type="text" id="user_name" class="form-control" placeholder="Admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña / API Key</label>
+                        <input type="password" id="user_password" class="form-control" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-between items-center">
+                    <button class="btn btn-primary shadow-[0_0_15px_rgba(99,102,241,0.5)]" onclick="saveEmbyConfig()">Guardar</button>
+                    <a href="/oppo" class="btn btn-secondary text-xs">Oppo Player →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+                <span class="text-base font-bold text-white">Prueba de Red</span>
+            </div>
+            <div class="mt-4 flex flex-col justify-between h-[calc(100%-3rem)]">
+                <div>
+                    <p class="text-xs text-slate-400 mb-4">Verifica que las credenciales son correctas y que el servidor Emby está accesible desde Xnoppo.</p>
+                    <div id="status-badge" class="status-badge hidden mb-4 self-start">ONLINE</div>
+                    <div id="embyStatusText" class="text-center p-4 rounded-xl text-sm font-bold hidden mb-4"></div>
+                </div>
+                <button class="btn btn-test w-full" id="btnTestEmby" onclick="testEmby()">Probar Conexión</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+
+// --- URL Parsing Logic ---
+function setEmbyServerParts(url) {
+    if (!url) return;
+    try {
+        if (!url.startsWith('http')) url = 'http://' + url;
+        const u = new URL(url);
+        document.getElementById('emby_protocol').value = u.protocol + '//';
+        document.getElementById('emby_ip').value = u.hostname;
+        document.getElementById('emby_port').value = u.port || (u.protocol === 'https:' ? '443' : '80');
+    } catch(e) {
+        // Fallback
+        document.getElementById('emby_ip').value = url.replace('http://','').replace('https://','').split(':')[0];
+    }
+}
+
+function getEmbyServerUrl() {
+    const proto = document.getElementById('emby_protocol').value;
+    const ip = document.getElementById('emby_ip').value.trim();
+    const port = document.getElementById('emby_port').value.trim();
+    if (!ip) return '';
+    return `${proto}${ip}${port ? ':' + port : ''}`;
+}
+
+setEmbyServerParts(cfg.emby_server);
+document.getElementById('user_name').value = cfg.user_name || '';
+document.getElementById('user_password').value = cfg.user_password || '';
+
+async function testEmby() {
+    const btn = document.getElementById('btnTestEmby');
+    const badge = document.getElementById('status-badge');
+    const statusImg = document.getElementById('statusImg');
+    const statusText = document.getElementById('embyStatusText');
+    
+    btn.innerHTML = '<span class="spinner"></span> Probando...';
+    statusText.classList.add('hidden');
+    
+    try {
+        const payload = { 
+            emby_server: getEmbyServerUrl(), 
+            user_name: document.getElementById('user_name').value, 
+            user_password: document.getElementById('user_password').value 
+        };
+        const r = await fetch('/api/test/emby', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const d = await r.json();
+        
+        statusText.classList.remove('hidden');
+        if (d.status === 'OK') {
+            const who = d.user ? ` como <strong>${d.user}</strong>` : '';
+            statusText.style.background = 'rgba(16, 185, 129, 0.1)';
+            statusText.style.color = '#34d399';
+            statusText.innerHTML = `✅ Conectado a Emby${who}`;
+            
+            showToast('Emby conectado', 'success');
+            badge.classList.remove('hidden');
+            if (statusImg) {
+                statusImg.src = '/static/img/nas_on.png';
+                statusImg.classList.remove('opacity-50');
+                statusImg.classList.add('opacity-80', 'scale-105');
+            }
+        } else {
+            statusText.style.background = 'rgba(239, 68, 68, 0.1)';
+            statusText.style.color = '#f87171';
+            statusText.innerHTML = `❌ Error: ${d.error || 'Credenciales incorrectas'}`;
+            
+            showToast('Error de conexión', 'error');
+            badge.classList.add('hidden');
+            if (statusImg) {
+                statusImg.src = '/static/img/nas_off.png';
+                statusImg.classList.remove('opacity-80', 'scale-105');
+                statusImg.classList.add('opacity-50');
+            }
+        }
+    } catch(e) { 
+        statusText.classList.remove('hidden');
+        statusText.style.background = 'rgba(239, 68, 68, 0.1)';
+        statusText.style.color = '#f87171';
+        statusText.innerHTML = `❌ Error de red`;
+        
+        showToast('Error de red','error'); 
+        badge.classList.add('hidden');
+        if (statusImg) statusImg.src = '/static/img/nas_off.png';
+    }
+    btn.innerHTML = 'Probar Conexión';
+}
+
+async function saveEmbyConfig() {
+    const payload = Object.assign({}, cfg, { 
+        emby_server: getEmbyServerUrl(), 
+        user_name: document.getElementById('user_name').value, 
+        user_password: document.getElementById('user_password').value 
+    });
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}

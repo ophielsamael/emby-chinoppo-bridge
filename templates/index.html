@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% set active_page = "home" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-body" style="padding-top: 32px;">
+
+    <!-- Hero Banner -->
+    <div class="hero">
+        <img class="hero-bg" src="{{ url_for('static', filename='img/home_theater.png') }}" alt="Home Theater">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Xnoppo</h1>
+            <p>Emby como interfaz, Oppo 203 como reproductor. Lo mejor de los dos mundos.</p>
+            <div class="btn-group mt-16">
+                <a href="/status" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    Ver Estado
+                </a>
+                <a href="/emby" class="btn btn-secondary">Configurar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div class="stat-label">Estado</div>
+            <div class="stat-value" id="statPlaystate" style="font-size:1.1rem">—</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">CPU</div>
+            <div class="stat-value text-gradient" id="statCpu">—%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Memoria</div>
+            <div class="stat-value text-gradient" id="statMem">—%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Versión</div>
+            <div class="stat-value" id="statVersion">v{{ config.get('Version', '3.00') }}</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <h3 style="font-size:1.1rem; font-weight:600; margin-bottom:16px; color:var(--text-secondary);">Acceso Rápido</h3>
+    <div class="quick-actions">
+        <a href="/emby" class="action-card">
+            <div class="action-icon purple">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>Emby Server</h3>
+                <p>Configura la conexión con tu servidor Emby</p>
+            </div>
+        </a>
+        <a href="/oppo" class="action-card">
+            <div class="action-icon blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>Oppo Player</h3>
+                <p>Ajustes del reproductor Oppo UDP-203</p>
+            </div>
+        </a>
+        <a href="/paths" class="action-card">
+            <div class="action-icon amber">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>Rutas de Red</h3>
+                <p>Mapeo de rutas entre Emby y el Oppo</p>
+            </div>
+        </a>
+        <a href="/remote" class="action-card">
+            <div class="action-icon green">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>Control Remoto</h3>
+                <p>Controla el Oppo directamente desde el navegador</p>
+            </div>
+        </a>
+        <a href="/tv" class="action-card">
+            <div class="action-icon red">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>TV & AV</h3>
+                <p>Automatización de TV y receptor AV</p>
+            </div>
+        </a>
+        <a href="/libraries" class="action-card">
+            <div class="action-icon purple">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="action-text">
+                <h3>Bibliotecas</h3>
+                <p>Selecciona qué bibliotecas de Emby están activas</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Fetch live stats on load
+    async function refreshStats() {
+        try {
+            const res = await fetch('/api/state');
+            const data = await res.json();
+            document.getElementById('statPlaystate').textContent = data.Playstate || '—';
+            document.getElementById('statCpu').textContent = data.cpu_perc + '%';
+            document.getElementById('statMem').textContent = data.mem_perc + '%';
+            document.getElementById('statVersion').textContent = 'v' + data.Version;
+
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            if (data.Playstate === 'Not_Connected') {
+                dot.style.background = 'var(--warning)';
+                txt.textContent = 'Sin conexión';
+            } else if (data.Playstate === 'Playing') {
+                dot.style.background = 'var(--success)';
+                txt.textContent = 'Reproduciendo';
+            } else {
+                dot.style.background = 'var(--accent-secondary)';
+                txt.textContent = data.Playstate;
+            }
+        } catch (e) {
+            console.error('Failed to refresh stats:', e);
+        }
+    }
+    refreshStats();
+    setInterval(refreshStats, 5000);
+</script>
+{% endblock %}

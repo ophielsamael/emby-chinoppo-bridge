@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- DENON-STYLE ELITE HERO -->
+<div class="relative w-full h-[60vh] md:h-[70vh] rounded-3xl md:rounded-[3.5rem] overflow-hidden mb-8 md:mb-16 shadow-2xl border border-white/5 group">
+    <img src="/static/img/home_bg.png" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Home Theater">
+    
+    <!-- Sophisticated Multi-Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent"></div>
+    
+    <div class="absolute inset-0 flex flex-col justify-center px-6 md:px-16">
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[10px] md:text-xs mb-4 animate__animated animate__fadeInDown">SISTEMA INTELIGENTE ACTIVO</span>
+        <h2 class="text-5xl md:text-9xl font-black mb-4 glow-text text-white tracking-tighter leading-[0.8] animate__animated animate__fadeInLeft">
+            XNOPPO <span class="text-slate-400 italic font-light">V3</span>
+        </h2>
+        
+        <div class="flex items-center gap-6 md:gap-10 mb-10 animate__animated animate__fadeInLeft animate__delay-1s">
+            <img src="/static/img/logo_emby.png" class="h-12 md:h-20 w-auto object-contain" alt="Emby">
+            <div class="w-px h-10 md:h-16 bg-white/20"></div>
+            <img src="/static/img/logo_oppo_text.png" class="h-8 md:h-14 w-auto object-contain brightness-200" alt="Oppo">
+        </div>
+
+        <p class="text-slate-300 text-sm md:text-xl max-w-xl font-medium leading-relaxed mb-8 md:mb-10 opacity-80 animate__animated animate__fadeInUp">
+            Tu sala de cine acaba de entrar en una categoría superior. Control total, orquestación perfecta y calidad sin compromisos.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 animate__animated animate__fadeInUp animate__delay-1s">
+            <a href="/remote" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 px-10 rounded-2xl transition-all shadow-xl shadow-indigo-600/20 uppercase tracking-widest text-[10px] md:text-xs text-center">
+                Abrir Control Remoto
+            </a>
+            <a href="/status" class="bg-white/5 hover:bg-white/10 backdrop-blur-md text-white border border-white/10 font-black py-4 px-10 rounded-2xl transition-all uppercase tracking-widest text-[10px] md:text-xs text-center">
+                Ver Estado
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- DEVICES GRID -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    
+    <!-- OPPO CARD -->
+    <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group card">
+        <div class="flex justify-between items-start">
+            <div class="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                <i data-lucide="disc" class="w-6 h-6"></i>
+            </div>
+            <span class="status-dot active"></span>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg mb-1 text-white">Oppo Player</h3>
+            <p class="text-xs text-slate-400 font-mono">{{ config.get('Oppo_IP', 'No configurado') }}</p>
+        </div>
+    </div>
+
+    <!-- EMBY CARD -->
+    <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group card">
+        <div class="flex justify-between items-start">
+            <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="server" class="w-6 h-6"></i>
+            </div>
+            <span class="status-dot active"></span>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg mb-1 text-white">Emby Server</h3>
+            <p class="text-xs text-slate-400 truncate">{{ config.get('emby_server', 'No configurado') }}</p>
+        </div>
+    </div>
+
+    <!-- AVR CARD -->
+    <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group card {{ '' if config.get('AV') else 'opacity-50' }}">
+        <div class="flex justify-between items-start">
+            <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="speaker" class="w-6 h-6"></i>
+            </div>
+            <span class="status-dot {{ 'active' if config.get('AV') else 'inactive' }}"></span>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg mb-1 text-white">Receptor AV</h3>
+            <p class="text-xs text-slate-400 uppercase">{{ config.get('AV_model', 'Desactivado') if config.get('AV') else 'Apagado' }}</p>
+        </div>
+    </div>
+
+    <!-- TV CARD -->
+    <div class="glass-card p-6 flex flex-col justify-between h-48 hover:bg-white/5 transition-colors group card {{ '' if config.get('TV') else 'opacity-50' }}">
+        <div class="flex justify-between items-start">
+            <div class="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
+                <i data-lucide="tv" class="w-6 h-6"></i>
+            </div>
+            <span class="status-dot {{ 'active' if config.get('TV') else 'inactive' }}"></span>
+        </div>
+        <div>
+            <h3 class="font-bold text-lg mb-1 text-white">TV / Proyector</h3>
+            <p class="text-xs text-slate-400 uppercase">{{ config.get('TV_model', 'Desactivado') if config.get('TV') else 'Apagado' }}</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- ACTIONS / LOGS PLACEHOLDER -->
+<div class="mt-12 glass-card p-8 card">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="font-bold text-xl text-white">Actividad del Sistema</h3>
+        <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-bold rounded-full">MONITORIZANDO</span>
+    </div>
+    <div class="bg-black/40 rounded-xl p-6 border border-white/5 font-mono text-sm text-slate-400">
+        <p>> Puente Emby-Oppo activo y conectado.</p>
+        <p>> Interceptando eventos WebSocket de reproducción...</p>
+        <p class="text-indigo-400 animate-pulse mt-4">> Esperando que inicies una película...</p>
+    </div>
+</div>
+{% endblock %}

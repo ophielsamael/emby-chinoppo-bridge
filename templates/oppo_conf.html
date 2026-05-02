@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Oppo Player{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[32vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card">
+    <img id="heroImg" src="/static/img/oppo_off.png" class="absolute inset-0 w-full h-full object-cover opacity-50 transition-all duration-1000" alt="Oppo Player">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+    <div id="status-badge" class="status-badge hidden">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+        ONLINE
+    </div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10">
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">REPRODUCTOR DE REFERENCIA</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Oppo <span class="text-slate-400">UDP-203</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Configuración completa de red y orquestación física del reproductor.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="disc" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white">Conexión Oppo</span>
+            </div>
+            
+            <div class="mt-6">
+                <div class="form-group">
+                    <label>Dirección IP del Oppo</label>
+                    <input type="text" id="Oppo_IP" class="form-control" placeholder="192.168.1.141">
+                </div>
+                <div class="form-group">
+                    <label>Timeout Conexión (seg)</label>
+                    <input type="number" id="timeout_oppo_conection" class="form-control" placeholder="10">
+                </div>
+                <div class="form-group">
+                    <label>Timeout Reproducción (seg)</label>
+                    <input type="number" id="timeout_oppo_playitem" class="form-control" placeholder="60">
+                </div>
+                <div class="form-group">
+                    <label>Timeout Montaje (seg)</label>
+                    <input type="number" id="timeout_oppo_mount" class="form-control" placeholder="60">
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-between items-center">
+                <button class="btn btn-primary" onclick="saveOppoConfig()">Guardar</button>
+                <a href="/libraries" class="btn btn-secondary text-xs">Bibliotecas →</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="settings-2" class="w-5 h-5 text-slate-400"></i>
+                <span class="text-base font-bold text-white">Opciones Avanzadas</span>
+            </div>
+            <div class="mt-4">
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">Always ON</div>
+                        <div class="toggle-description">Mantener encendido tras la película</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="Always_ON"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">AutoScript</div>
+                        <div class="toggle-description">Desmontar carpetas automáticamente</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="Autoscript"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">NFS por defecto</div>
+                        <div class="toggle-description">Priorizar NFS sobre SMB</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="default_nfs"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">SMB Trick</div>
+                        <div class="toggle-description">Evitar caché SMB montando otra carpeta</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="smbtrick"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">BR Disc</div>
+                        <div class="toggle-description">Doble EJT para saltar pantalla Blu-ray</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="BRDisc"><span class="slider"></span></label>
+                </div>
+                
+                <button class="btn btn-test mt-8" id="btnTestOppo" onclick="testOppo()">Probar Conexión</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+document.getElementById('Oppo_IP').value = cfg.Oppo_IP || '';
+document.getElementById('timeout_oppo_conection').value = cfg.timeout_oppo_conection || 10;
+document.getElementById('timeout_oppo_playitem').value = cfg.timeout_oppo_playitem || 60;
+document.getElementById('timeout_oppo_mount').value = cfg.timeout_oppo_mount || 60;
+document.getElementById('Always_ON').checked = !!cfg.Always_ON;
+document.getElementById('Autoscript').checked = !!cfg.Autoscript;
+document.getElementById('default_nfs').checked = !!cfg.default_nfs;
+document.getElementById('smbtrick').checked = !!cfg.smbtrick;
+document.getElementById('BRDisc').checked = !!cfg.BRDisc;
+
+async function testOppo() {
+    const badge = document.getElementById('status-badge');
+    const heroImg = document.getElementById('heroImg');
+    const btn = document.getElementById('btnTestOppo');
+    const ip = document.getElementById('Oppo_IP').value;
+    const timeout = parseInt(document.getElementById('timeout_oppo_conection').value);
+    
+    btn.innerHTML = '<span class="spinner"></span> Probando...';
+    try {
+        const r = await fetch('/api/test/oppo', { 
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body: JSON.stringify({ Oppo_IP: ip, timeout_oppo_conection: timeout }) 
+        });
+        const d = await r.json();
+        if (d.status === 'OK') {
+            showToast('Oppo conectado con éxito', 'success');
+            badge.classList.remove('hidden');
+            heroImg.src = '/static/img/oppo_on.png';
+            heroImg.classList.add('opacity-80', 'scale-105');
+        } else {
+            showToast('Error al conectar con Oppo', 'error');
+            badge.classList.add('hidden');
+            heroImg.src = '/static/img/oppo_off.png';
+        }
+    } catch(e) { showToast('Error de red','error'); }
+    btn.innerHTML = 'Probar Conexión';
+}
+
+async function saveOppoConfig() {
+    const payload = Object.assign({}, cfg, { 
+        Oppo_IP: document.getElementById('Oppo_IP').value, 
+        timeout_oppo_conection: parseInt(document.getElementById('timeout_oppo_conection').value), 
+        timeout_oppo_playitem: parseInt(document.getElementById('timeout_oppo_playitem').value), 
+        timeout_oppo_mount: parseInt(document.getElementById('timeout_oppo_mount').value), 
+        Always_ON: document.getElementById('Always_ON').checked, 
+        Autoscript: document.getElementById('Autoscript').checked, 
+        default_nfs: document.getElementById('default_nfs').checked,
+        smbtrick: document.getElementById('smbtrick').checked,
+        BRDisc: document.getElementById('BRDisc').checked
+    });
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}

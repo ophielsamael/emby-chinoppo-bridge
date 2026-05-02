@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  xnoppo-nextgen:
+    build: .
+    container_name: xnoppo-nextgen
+    ports:
+      - "8090:8090"
+    volumes:
+      - .:/app
+    restart: always

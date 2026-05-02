@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Estado{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[28vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card">
+    <img id="heroPosterBg" src="" class="absolute inset-0 w-full h-full object-cover opacity-30 blur-2xl transition-all duration-1000" alt="">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#1e293b]/90 to-transparent"></div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10">
+        <div class="flex items-center gap-4 mb-2">
+            <div class="w-10 h-10 bg-indigo-600/20 rounded-xl flex items-center justify-center border border-indigo-500/30">
+                <i data-lucide="activity" class="text-indigo-400 w-5 h-5"></i>
+            </div>
+            <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px]">MONITORIZACIÓN EN TIEMPO REAL</span>
+        </div>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Estado <span class="text-slate-400">del Sistema</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Supervisión en directo del reproductor y uso de recursos del servidor.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <!-- STATS WIDGETS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+        <div class="card" style="padding: 1.25rem;">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1" data-i18n="playback">Reproducción</div>
+            <div class="text-lg font-black text-white" id="statPlaystate">Cargando...</div>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1" data-i18n="title">Título</div>
+            <div class="text-sm font-bold text-white truncate" id="statTitle">—</div>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1" data-i18n="cpu">CPU</div>
+            <div class="text-xl font-black text-indigo-400" id="statCpu">—%</div>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1" data-i18n="memory">Memoria</div>
+            <div class="text-xl font-black text-emerald-400" id="statMem">—%</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- PLAYBACK DETAILS -->
+        <div class="card overflow-hidden">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="play-circle" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white" data-i18n="current_playback">Reproducción actual</span>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6 mt-4 items-center md:items-start">
+                <div id="posterContainer" style="display:none; width: 240px; flex-shrink: 0;" class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <img id="moviePoster" src="" class="relative w-full rounded-xl shadow-2xl border border-white/10" alt="Poster">
+                </div>
+                <div class="flex-1 w-full">
+                    <div class="toggle-wrapper" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                        <span class="text-xs text-slate-500 font-bold" data-i18n="status">Estado</span>
+                        <span class="text-sm text-white font-bold" id="detPlaystate">—</span>
+                    </div>
+                    <div class="toggle-wrapper" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-top: 8px;">
+                        <span class="text-xs text-slate-500 font-bold" data-i18n="title">Título</span>
+                        <span class="text-sm text-white font-bold text-right truncate flex-1 ml-4" id="detTitle">—</span>
+                    </div>
+                    <div class="toggle-wrapper" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-top: 8px;">
+                        <span class="text-xs text-slate-500 font-bold">Servidor</span>
+                        <span class="text-xs text-slate-300 text-right truncate w-48" id="detServer">—</span>
+                    </div>
+                    <div class="toggle-wrapper" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; margin-top: 8px;">
+                        <span class="text-xs text-slate-500 font-bold">Carpeta</span>
+                        <span class="text-xs text-slate-300 text-right truncate w-48" id="detFolder">—</span>
+                    </div>
+                    <div class="toggle-wrapper" style="margin-top: 8px;">
+                        <span class="text-xs text-slate-500 font-bold">Fichero</span>
+                        <span class="text-xs text-slate-300 text-right truncate flex-1 ml-4" id="detFile">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOG VIEWER -->
+        <div class="card flex flex-col">
+            <div class="card-title flex items-center justify-between gap-2 mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="terminal" class="w-5 h-5 text-emerald-400"></i>
+                    <span class="text-base font-bold text-white" data-i18n="log">Log del sistema</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                    <span class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Auto-Refresh</span>
+                    <label class="switch scale-[0.65] origin-right"><input type="checkbox" id="autoLogToggle" checked><span class="slider"></span></label>
+                </div>
+            </div>
+            <div class="bg-[#0b1120] rounded-xl border border-white/10 p-4 font-mono text-[11px] text-slate-300 overflow-y-auto overflow-x-hidden mb-4 custom-scrollbar whitespace-pre-wrap break-all select-text shadow-inner w-full" id="logBox" style="line-height: 1.5; min-height: 400px; max-height: 500px;">
+                Cargando...
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-secondary flex-1" onclick="loadLog()" data-i18n="refresh_log">Refrescar Log</button>
+                <button class="btn btn-secondary flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/50" onclick="restartApp()" data-i18n="restart_app">Reiniciar App</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function refreshStatus() {
+    try {
+        const res = await fetch('/api/state');
+        const d = await res.json();
+        document.getElementById('statPlaystate').textContent = d.Playstate || '—';
+        document.getElementById('statTitle').textContent = d.playedtitle || '—';
+        document.getElementById('statCpu').textContent = (d.cpu_perc || 0) + '%';
+        document.getElementById('statMem').textContent = (d.mem_perc || 0) + '%';
+        
+        document.getElementById('detPlaystate').textContent = d.Playstate || '—';
+        document.getElementById('detTitle').textContent = d.playedtitle || '—';
+        document.getElementById('detTitle').title = d.playedtitle || '';
+        document.getElementById('detServer').textContent = d.server || '—';
+        document.getElementById('detFolder').textContent = d.folder || '—';
+        document.getElementById('detFile').textContent = d.filename || '—';
+        
+        // Poster logic
+        const posterImg = document.getElementById('moviePoster');
+        const heroBg = document.getElementById('heroPosterBg');
+        const posterDiv = document.getElementById('posterContainer');
+        if (d.poster_url) {
+            if (posterImg.src !== d.poster_url) {
+                posterImg.src = d.poster_url;
+                if (heroBg) heroBg.src = d.poster_url;
+            }
+            posterDiv.style.display = 'block';
+        } else {
+            posterDiv.style.display = 'none';
+            if (heroBg) heroBg.src = '';
+        }
+    } catch(e) {}
+}
+
+async function loadLog() {
+    try {
+        const res = await fetch('/api/log');
+        const txt = await res.text();
+        const box = document.getElementById('logBox');
+        const isAtBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 20;
+        
+        box.textContent = txt || 'Log vacío';
+        
+        // Only scroll if was already at bottom (don't force scroll if user is reading)
+        if (isAtBottom) {
+            box.scrollTop = box.scrollHeight;
+        }
+    } catch(e) { document.getElementById('logBox').textContent = 'Error al cargar el log'; }
+}
+
+async function restartApp() {
+    if (!confirm('¿Seguro que deseas reiniciar el orquestador?')) return;
+    try {
+        await fetch('/api/restart', {method:'POST'});
+        showToast('Reiniciando aplicación...', 'info');
+    } catch (e) {
+        showToast('Error al intentar reiniciar', 'error');
+    }
+}
+
+refreshStatus();
+loadLog();
+setInterval(refreshStatus, 3000);
+setInterval(() => {
+    if (document.getElementById('autoLogToggle').checked) {
+        loadLog();
+    }
+}, 2000);
+</script>
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+</style>
+{% endblock %}

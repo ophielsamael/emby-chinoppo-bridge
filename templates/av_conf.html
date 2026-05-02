@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}AV Receiver{% endblock %}
+{% block content %}
+<!-- ELITE HERO HEADER (Compact Style) -->
+<div class="relative w-full h-[32vh] rounded-[2rem] overflow-hidden mb-8 shadow-2xl border border-white/5 card">
+    <img id="heroImg" src="/static/img/avr_off.png" class="absolute inset-0 w-full h-full object-cover opacity-50 transition-all duration-1000" alt="AV Receiver">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#0f172a]/60 to-transparent"></div>
+    <div id="status-badge" class="status-badge hidden">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
+        ONLINE
+    </div>
+    <div class="absolute inset-0 flex flex-col justify-center px-10">
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">PROCESAMIENTO DE AUDIO ELITE</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Receptor <span class="text-slate-400">Audio/Vídeo</span></h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Gestión de potencia y entradas para el sistema multicanal.</p>
+    </div>
+</div>
+
+<div class="page-body">
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="speaker" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white">Configuración AV</span>
+            </div>
+            
+            <div class="toggle-wrapper">
+                <div>
+                    <div class="toggle-label">Activar control AV</div>
+                    <div class="toggle-description">Automatizar encendido y HDMI</div>
+                </div>
+                <label class="switch"><input type="checkbox" id="AV" onchange="toggleAVFields()"><span class="slider"></span></label>
+            </div>
+
+            <div id="avFieldsContainer" class="mt-6">
+                <div class="form-group">
+                    <label>Marca del Receptor</label>
+                    <select id="AV_model" class="form-control">
+                        <option value="">— Seleccionar Marca —</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>IP del receptor AV</label>
+                    <input type="text" id="AV_Ip" class="form-control" placeholder="192.168.1.105">
+                </div>
+                <div class="form-group">
+                    <label>Puerto</label>
+                    <input type="number" id="AV_Port" class="form-control" placeholder="23">
+                </div>
+                <div class="form-group">
+                    <label>Entrada HDMI</label>
+                    <select id="AV_Input" class="form-control">
+                        <option value="">-- Cargando entradas... --</option>
+                    </select>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary text-xs" onclick="detectHDMI(true)" id="btnDetectHDMI">Refrescar Entradas</button>
+                    </div>
+                </div>
+                <div class="form-group mt-4">
+                    <label>Delay cambio HDMI (seg)</label>
+                    <input type="number" id="av_delay_hdmi" class="form-control" min="0" max="30">
+                </div>
+                
+                <div class="toggle-wrapper">
+                    <div>
+                        <div class="toggle-label">AV Always ON</div>
+                        <div class="toggle-description">No apagar el AV al finalizar</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="AV_Always_ON"><span class="slider"></span></label>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-between items-center">
+                <button class="btn btn-primary" onclick="saveAVConfig()">Guardar</button>
+                <a href="/other" class="btn btn-secondary text-xs">Otros →</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
+                <span class="text-base font-bold text-white">Test de Conectividad</span>
+            </div>
+            <div class="mt-4">
+                <button class="btn btn-test" id="btnTestConn" onclick="testAV('conn')">Probar Conexión</button>
+                <button class="btn btn-test" onclick="testAV('on')">Probar Power ON</button>
+                <button class="btn btn-test" onclick="testAV('hdmi')">Probar cambio HDMI</button>
+                <button class="btn btn-test" onclick="testAV('off')">Probar Power OFF</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+document.getElementById('AV').checked = !!cfg.AV;
+document.getElementById('AV_Ip').value = cfg.AV_Ip || '';
+document.getElementById('AV_Port').value = cfg.AV_Port || 23;
+document.getElementById('av_delay_hdmi').value = cfg.av_delay_hdmi || 0;
+document.getElementById('AV_Always_ON').checked = !!cfg.AV_Always_ON;
+
+const selMod = document.getElementById('AV_model');
+(cfg.av_dirs || ['Denon', 'Yamaha', 'Onkyo']).forEach(d => { 
+    const o = document.createElement('option'); o.value = d; o.textContent = d; 
+    if (d === cfg.AV_model) o.selected = true; 
+    selMod.appendChild(o); 
+});
+
+function toggleAVFields() {
+    const active = document.getElementById('AV').checked;
+    const container = document.getElementById('avFieldsContainer');
+    container.style.opacity = active ? '1' : '0.4';
+    container.querySelectorAll('input, select, button').forEach(el => el.disabled = !active);
+}
+toggleAVFields();
+
+function getPayload() {
+    return Object.assign({}, cfg, { 
+        AV: document.getElementById('AV').checked, 
+        AV_Ip: document.getElementById('AV_Ip').value, 
+        AV_Port: parseInt(document.getElementById('AV_Port').value), 
+        AV_Input: document.getElementById('AV_Input').value, 
+        AV_model: document.getElementById('AV_model').value, 
+        av_delay_hdmi: parseInt(document.getElementById('av_delay_hdmi').value), 
+        AV_Always_ON: document.getElementById('AV_Always_ON').checked 
+    });
+}
+
+async function detectHDMI(showToastMsg = false) {
+    const btn = document.getElementById('btnDetectHDMI');
+    const sel = document.getElementById('AV_Input');
+    if(btn) btn.disabled = true;
+    try {
+        const payload = getPayload();
+        const res = await fetch('/api/test/av_hdmi_list', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        if (res.ok) {
+            const data = await res.json();
+            const list = data.result || [];
+            sel.innerHTML = '<option value="">-- Seleccionar entrada --</option>';
+            list.forEach(hdmi => {
+                let val = hdmi; let text = hdmi;
+                if (typeof hdmi === 'object') {
+                    val = hdmi.Param; text = hdmi.Name;
+                }
+                const opt = document.createElement('option');
+                opt.value = val; opt.textContent = text;
+                if (val == cfg.AV_Input || text == cfg.AV_Input || val.trim() == cfg.AV_Input.trim()) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            if (showToastMsg) showToast('Entradas detectadas', 'success');
+        } else {
+            sel.innerHTML = '<option value="">-- Error (comprueba IP) --</option>';
+        }
+    } catch(e) { sel.innerHTML = '<option value="">-- Error de red --</option>'; }
+    if(btn) btn.disabled = false;
+}
+detectHDMI();
+
+async function testAV(action) {
+    const badge = document.getElementById('status-badge');
+    const heroImg = document.getElementById('heroImg');
+    showToast('Probando AV ' + action + '...', 'info');
+    try {
+        const payload = getPayload();
+        payload.action = action;
+        const r = await fetch(`/api/test/av_${action}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        const d = await r.json();
+        if (d.status === 'OK') {
+            showToast('✅ Acción ejecutada', 'success');
+            if (action === 'conn') {
+                badge.classList.remove('hidden');
+                heroImg.src = '/static/img/avr_on.png';
+                heroImg.classList.add('opacity-80', 'scale-105');
+            }
+        } else {
+            showToast('❌ Error en el receptor', 'error');
+            if (action === 'conn') {
+                badge.classList.add('hidden');
+                heroImg.src = '/static/img/avr_off.png';
+            }
+        }
+    } catch(e) { showToast('Error de red','error'); }
+}
+
+async function saveAVConfig() {
+    const payload = getPayload();
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}

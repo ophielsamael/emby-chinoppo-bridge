@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Bibliotecas{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Bibliotecas</h2>
+    <p class="page-description">Selecciona qué bibliotecas de Emby activan la reproducción en el Oppo</p>
+</div>
+<div class="page-body">
+    <div class="card mb-24">
+        <div class="card-title">
+            <div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+            Bibliotecas Emby
+        </div>
+
+        <div class="toggle-wrapper">
+            <div>
+                <div class="toggle-label">Activar todas las bibliotecas</div>
+                <div class="toggle-description">Si está activo, ignora la selección individual</div>
+            </div>
+            <label class="toggle"><input type="checkbox" id="enable_all_libraries" onchange="toggleAll()"><span class="toggle-slider"></span></label>
+        </div>
+
+        <div id="libraryList" style="margin-top:16px;">
+            <p style="color:var(--text-muted);text-align:center;padding:24px 0;">
+                <span id="libLoadMsg">Carga la lista desde Emby para activar/desactivar bibliotecas individuales</span>
+            </p>
+        </div>
+
+        <div class="btn-group mt-24">
+            <button class="btn btn-secondary" id="btnLoadLibs" onclick="loadLibraries()">Cargar desde Emby</button>
+            <button class="btn btn-primary" onclick="saveLibraries()">Guardar</button>
+        </div>
+    </div>
+
+    <div class="flex-between mt-24">
+        <a href="/oppo" class="btn btn-secondary">← Oppo</a>
+        <a href="/paths" class="btn btn-primary">Rutas →</a>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const cfg = {{ config | tojson }};
+document.getElementById('enable_all_libraries').checked = !!cfg.enable_all_libraries;
+
+let libraries = cfg.Libraries || [];
+renderLibraries();
+
+function renderLibraries() {
+    const list = document.getElementById('libraryList');
+    if (!libraries.length) return;
+    const disabled = document.getElementById('enable_all_libraries').checked;
+    list.innerHTML = libraries.map((lib, i) => `
+        <div class="toggle-wrapper">
+            <div><div class="toggle-label">${lib.Name}</div><div class="toggle-description" style="font-family:monospace;font-size:0.7rem">${lib.Id || ''}</div></div>
+            <label class="toggle"><input type="checkbox" data-i="${i}" ${lib.Active ? 'checked' : ''} ${disabled ? 'disabled' : ''}><span class="toggle-slider"></span></label>
+        </div>`).join('');
+}
+
+function toggleAll() { renderLibraries(); }
+
+async function loadLibraries() {
+    const btn = document.getElementById('btnLoadLibs');
+    btn.innerHTML = '<span class="spinner"></span> Cargando...'; btn.disabled = true;
+    try {
+        const res = await fetch('/api/emby/libraries', { method: 'POST' });
+        if (res.ok) {
+            const data = await res.json();
+            libraries = data.Libraries || [];
+            renderLibraries();
+            showToast('Bibliotecas cargadas', 'success');
+        } else {
+            showToast('Error cargando bibliotecas', 'error');
+        }
+    } catch(e) { showToast('Error de red', 'error'); }
+    btn.innerHTML = 'Cargar desde Emby'; btn.disabled = false;
+}
+
+async function saveLibraries() {
+    const checks = document.querySelectorAll('#libraryList input[type=checkbox]');
+    checks.forEach(chk => { libraries[parseInt(chk.dataset.i)].Active = chk.checked; });
+    const payload = Object.assign({}, cfg, { enable_all_libraries: document.getElementById('enable_all_libraries').checked, Libraries: libraries });
+    await xnoppo.saveConfig(payload);
+}
+</script>
+{% endblock %}
