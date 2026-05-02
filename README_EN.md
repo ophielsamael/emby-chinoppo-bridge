@@ -41,9 +41,12 @@ Unlike the original version (which was a manual Python script), Xnoppo Elite V3 
 ## 🚀 Certified Test Environment
 This version has been extensively tested in the following configuration, guaranteeing total stability:
 *   **Server**: Synology DS423+ (Docker).
-*   **Source Player**: Nvidia Shield TV Pro / Chinoppo M901.
+*   **Source Players**: Nvidia Shield TV Pro and **Chinoppo M901**.
 *   **AV Receiver**: Denon AVC-X3800H.
 *   **Access Control**: Successfully tested from **Chrome** browsers and **mobile** devices (iOS/Android).
+
+> [!CAUTION]
+> **TV Compatibility Note**: The system includes options for TV control (RS232/IP), but these functions **have not been tested** on LG TVs or other brands, as the test environment uses a **Projector**. While the logic is implemented, this section is considered "experimental" until validated in a setup with a physical TV.
 
 ---
 

@@ -42,9 +42,12 @@ A diferencia de la versión original (que era un script de Python manual), Xnopp
 ## 🚀 Entorno de Pruebas Certificado
 Esta versión ha sido testeada exhaustivamente en la siguiente configuración, garantizando estabilidad total:
 *   **Servidor**: Synology DS423+ (Docker).
-*   **Reproductor Origen**: Nvidia Shield TV Pro / Chinoppo M901.
+*   **Reproductores Origen**: Nvidia Shield TV Pro y **Chinoppo M901**.
 *   **Receptor AV**: Denon AVC-X3800H.
 *   **Control de Acceso**: Probado con éxito desde navegadores **Chrome** y dispositivos **móviles** (iOS/Android).
+
+> [!CAUTION]
+> **Nota sobre Compatibilidad de TV**: El sistema incluye opciones para controlar televisores (RS232/IP), pero estas funciones **no han sido testeadas** en televisores LG u otras marcas, ya que el entorno de pruebas utiliza un **Proyector**. Aunque la lógica está implementada, esta sección se considera "experimental" hasta que sea validada en un entorno con TV física.
 
 ---
 
