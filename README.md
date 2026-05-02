@@ -23,6 +23,7 @@
 *   **🛠️ Motor de Auto-Curación**: Lógica inteligente que detecta fallos en el arranque de archivos pesados y los soluciona sin intervención del usuario.
 *   **📊 Consola Pro**: Un visualizador de registros profesional que permite pausar, filtrar y ajustar la verbosidad en tiempo real.
 *   **🌍 Multi-Idioma Nativo**: Selector dinámico de idioma (ES/EN) integrado en la cabecera.
+*   **🐳 Migración a Docker**: Arquitectura basada en contenedores para máxima estabilidad, eliminando la necesidad de reinicios manuales constantes.
 
 ---
 

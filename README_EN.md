@@ -22,6 +22,7 @@
 *   **🛠️ Auto-Healing Engine**: Intelligent logic that detects failed starts for heavy files and fixes them without user intervention.
 *   **📊 Pro Console**: A professional log viewer that allows pausing, filtering, and adjusting verbosity in real-time.
 *   **🌍 Native Multi-Language**: Dynamic language selector (ES/EN) integrated into the header.
+*   **🐳 Docker Migration**: Container-based architecture for maximum stability, eliminating the need for constant manual restarts.
 
 ---
 
