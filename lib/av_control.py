@@ -21,7 +21,10 @@ def _load_plugin(config):
     # Plugin paths are like: lib/AV/YAMAHA/yamaha.py
     # But since we don't know the exact filename (it might be YAMAHA.py or yamaha.py),
     # we look for the first .py file in the directory that matches the model name (case-insensitive).
-    plugin_dir = Path(__file__).parent / "AV" / model
+    # Integra and Onkyo share the same protocol
+    model_folder = "ONKYO" if model.upper() == "INTEGRA" else model
+    
+    plugin_dir = Path(__file__).parent / "AV" / model_folder
     if not plugin_dir.exists():
         logger.warning("AV plugin directory not found: %s", plugin_dir)
         return None

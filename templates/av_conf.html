@@ -102,7 +102,7 @@ document.getElementById('av_delay_hdmi').value = cfg.av_delay_hdmi || 0;
 document.getElementById('AV_Always_ON').checked = !!cfg.AV_Always_ON;
 
 const selMod = document.getElementById('AV_model');
-(cfg.av_dirs || ['Denon', 'Yamaha', 'Onkyo']).forEach(d => { 
+(cfg.av_dirs || ['Denon', 'Yamaha', 'Onkyo', 'Integra', 'Marantz', 'NAD']).forEach(d => { 
     const o = document.createElement('option'); o.value = d; o.textContent = d; 
     if (d === cfg.AV_model) o.selected = true; 
     selMod.appendChild(o); 
