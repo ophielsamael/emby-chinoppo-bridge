@@ -75,10 +75,25 @@ Para un funcionamiento "Elite", utiliza estas configuraciones probadas:
 | **Protocolo de Red** | **NFS** | Es significativamente más rápido en el arranque de archivos ISO y carpetas BDMV que SMB. |
 | **Oppo IP** | **Estática** | Evita que el dashboard pierda la conexión si el router cambia la IP del reproductor. |
 | **Refresh Rate** | **5 Segundos** | El equilibrio perfecto entre fluidez de la interfaz y carga de red baja. |
+| **Auto-Healing** | **Activado** | (Interno) Re-intenta automáticamente la carga de ISOs si fallan al primer intento. |
 
-### 🛠️ Opciones Avanzadas
-*   **Debug Level (Nivel 0)**: Mantener en 0 para uso diario. Solo subir a 3 si necesitas investigar por qué una ruta no se monta.
-*   **Auto-Healing ISO**: **Activado**. Esta función detecta si un ISO no ha cargado tras 20s y re-envía la orden de reproducción automáticamente.
+### 🔊 Receptor AV y Otros
+*   **Gestión de Energía (AVR Always ON)**: Se recomienda activar si quieres que el receptor AV se encienda/apague sincronizado con el Oppo. Desactívalo si prefieres controlar el encendido manualmente para otros usos (como escuchar música).
+*   **Esperar Montaje NFS**: Esta opción añade un pequeño retraso controlado para asegurar que el Oppo ha montado la carpeta antes de enviar la orden de Play, evitando pantallas negras.
+*   **Auto-Refresh Log**: Mantener activado en la sección de **Estado**. Te permite ver qué está pasando "bajo el capó" en tiempo real sin tener que refrescar la página manualmente.
+
+---
+
+## 📱 Control Remoto Virtual: Tu Plan B
+¿Se te han acabado las pilas del mando original? ¿No encuentras el mando del Chinoppo? No hay problema. 
+
+Xnoppo Elite V3 incluye un **Control Remoto Virtual** totalmente funcional y optimizado para móviles. 
+
+![Remote Control Screenshot](static/img/remote_preview.png) *(Placeholder: Añade aquí tu captura)*
+
+*   **D-Pad Táctil**: Navegación precisa por los menús del Oppo.
+*   **Controles de Transporte**: Play, Pause, Stop y saltos de capítulo con un toque.
+*   **Botones Directos**: Acceso rápido a Home, Back, Info y Settings.
 
 ---
 

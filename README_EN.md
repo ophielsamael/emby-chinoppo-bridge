@@ -72,10 +72,25 @@ For an "Elite" performance, use these proven settings:
 | **Network Protocol** | **NFS** | It is significantly faster at starting ISO files and BDMV folders than SMB. |
 | **Oppo IP** | **Static** | Prevents the dashboard from losing connection if the router changes the player's IP. |
 | **Refresh Rate** | **5 Seconds** | The perfect balance between UI fluidity and low network load. |
+| **Auto-Healing** | **Enabled** | (Internal) Automatically retries ISO loading if it fails on the first attempt. |
 
-### 🛠️ Advanced Options
-*   **Debug Level (Level 0)**: Keep at 0 for daily use. Only increase to 3 if you need to investigate why a path is not mounting.
-*   **Auto-Healing ISO**: **Enabled**. This function detects if an ISO hasn't loaded after 20s and re-sends the playback command automatically.
+### 🔊 AV Receiver and Others
+*   **Power Management (AVR Always ON)**: Recommended if you want your AV receiver to power on/off synced with the Oppo. Disable it if you prefer manual power control for other uses (like listening to music).
+*   **Wait for NFS Mount**: This option adds a controlled delay to ensure the Oppo has mounted the folder before sending the Play command, preventing black screens.
+*   **Log Auto-Refresh**: Keep enabled in the **Status** section. It allows you to see what's happening "under the hood" in real-time without manual page refreshes.
+
+---
+
+## 📱 Virtual Remote Control: Your Plan B
+Run out of batteries in your original remote? Can't find your Chinoppo remote? No problem.
+
+Xnoppo Elite V3 includes a fully functional **Virtual Remote Control** optimized for mobile devices.
+
+![Remote Control Screenshot](static/img/remote_preview.png) *(Placeholder: Add your screenshot here)*
+
+*   **Touch D-Pad**: Precise navigation through Oppo menus.
+*   **Transport Controls**: One-touch Play, Pause, Stop, and chapter skips.
+*   **Direct Buttons**: Quick access to Home, Back, Info, and Settings.
 
 ---
 
