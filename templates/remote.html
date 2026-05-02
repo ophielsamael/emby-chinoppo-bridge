@@ -19,122 +19,167 @@
 
 <style>
     .remote-btn {
-        background: #1e293b;
-        border: 1px solid rgba(255,255,255,0.05);
+        background: rgba(30, 41, 59, 0.4);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         color: #94a3b8;
-        border-radius: 12px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         -webkit-tap-highlight-color: transparent;
     }
-    .remote-btn:hover { background: #334155; color: #f8fafc; border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
-    .remote-btn:active { transform: translateY(1px); background: #475569; }
-    .remote-btn.ok-btn { background: #4f46e5; color: white; border-color: #6366f1; box-shadow: 0 0 15px rgba(99,102,241,0.4); font-weight: bold; }
+    .remote-btn:hover { 
+        background: rgba(99, 102, 241, 0.15); 
+        color: #f8fafc; 
+        border-color: rgba(99, 102, 241, 0.3); 
+        transform: translateY(-2px) scale(1.02); 
+    }
+    .remote-btn:active { transform: translateY(1px) scale(0.95); background: rgba(99, 102, 241, 0.3); }
     
-    .light-theme .remote-btn { background: #f8fafc; border-color: #cbd5e1; color: #475569; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .light-theme .remote-btn:hover { background: #e2e8f0; color: #0f172a; }
-    .light-theme .remote-btn.ok-btn { background: #4f46e5; color: white; }
+    /* Circular D-Pad Layout */
+    .dpad-container {
+        position: relative;
+        width: 280px;
+        height: 280px;
+        background: rgba(15, 23, 42, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,0.03);
+        box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
+    }
+    .dpad-btn {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        background: rgba(30, 41, 59, 0.6);
+    }
+    .dpad-up { top: 15px; }
+    .dpad-down { bottom: 15px; }
+    .dpad-left { left: 15px; }
+    .dpad-right { right: 15px; }
+    
+    .ok-btn { 
+        width: 90px; height: 90px; 
+        border-radius: 50%; 
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        color: white; 
+        font-weight: 900;
+        font-size: 1.2rem;
+        border: none;
+        box-shadow: 0 0 30px rgba(99,102,241,0.4);
+        z-index: 10;
+    }
+    .ok-btn:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 0 40px rgba(99,102,241,0.6); }
+
+    .transport-btn {
+        border-radius: 50%;
+        background: rgba(30, 41, 59, 0.3);
+    }
+    .transport-btn i { width: 1.25rem; height: 1.25rem; }
+
+    .light-theme .remote-btn { background: rgba(255,255,255,0.6); border-color: rgba(0,0,0,0.05); color: #475569; }
+    .light-theme .dpad-container { background: rgba(0,0,0,0.03); }
+    .light-theme .dpad-btn { background: white; }
+    .light-theme .ok-btn { background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; }
 
     @media (max-width: 768px) {
-        .remote-btn { border-radius: 16px; }
-        .dpad-btn { width: 70px !important; height: 70px !important; }
-        .nav-extra-btn { width: 60px !important; height: 60px !important; }
-        .transport-btn { width: 55px !important; height: 55px !important; }
+        .dpad-container { width: 240px; height: 240px; }
+        .dpad-btn { width: 60px; height: 60px; }
+        .ok-btn { width: 80px; height: 80px; }
     }
 </style>
 
 <div class="page-body">
     <div class="grid-2">
 
-        <!-- D-Pad & Transport -->
+        <!-- D-Pad & Navigation -->
         <div class="card flex flex-col items-center">
-            <div class="card-title flex items-center gap-2 mb-6 w-full">
+            <div class="card-title flex items-center gap-2 mb-8 w-full">
                 <i data-lucide="move" class="w-5 h-5 text-indigo-400"></i>
-                <span class="text-base font-bold text-white">Navegación</span>
+                <span class="text-base font-bold text-white">Navegación Táctil</span>
             </div>
             
-            <div class="grid grid-cols-3 gap-3 mb-8">
-                <div></div>
-                <button class="remote-btn dpad-btn w-16 h-16" onclick="key('NUP')" title="Arriba"><i data-lucide="chevron-up"></i></button>
-                <div></div>
-                <button class="remote-btn dpad-btn w-16 h-16" onclick="key('NLT')" title="Izquierda"><i data-lucide="chevron-left"></i></button>
-                <button class="remote-btn dpad-btn ok-btn w-16 h-16" onclick="key('SEL')" title="OK">OK</button>
-                <button class="remote-btn dpad-btn w-16 h-16" onclick="key('NRT')" title="Derecha"><i data-lucide="chevron-right"></i></button>
-                <div></div>
-                <button class="remote-btn dpad-btn w-16 h-16" onclick="key('NDN')" title="Abajo"><i data-lucide="chevron-down"></i></button>
-                <div></div>
+            <div class="dpad-container mb-10">
+                <button class="remote-btn dpad-btn dpad-up" onclick="key('NUP')"><i data-lucide="chevron-up"></i></button>
+                <button class="remote-btn dpad-btn dpad-down" onclick="key('NDN')"><i data-lucide="chevron-down"></i></button>
+                <button class="remote-btn dpad-btn dpad-left" onclick="key('NLT')"><i data-lucide="chevron-left"></i></button>
+                <button class="remote-btn dpad-btn dpad-right" onclick="key('NRT')"><i data-lucide="chevron-right"></i></button>
+                <button class="remote-btn ok-btn" onclick="key('SEL')">OK</button>
             </div>
 
-            <div class="flex gap-3 md:gap-4 mb-8">
-                <button class="remote-btn nav-extra-btn w-14 h-14 flex-col gap-1" onclick="key('HOM')" title="Home">
-                    <i data-lucide="home" class="w-4 h-4"></i><span class="text-[9px] font-bold">HOME</span>
+            <div class="grid grid-cols-4 gap-3 w-full max-w-[320px]">
+                <button class="remote-btn h-14 flex-col gap-1" onclick="key('HOM')">
+                    <i data-lucide="home" class="w-4 h-4 text-indigo-400"></i><span class="text-[9px] font-black uppercase">Home</span>
                 </button>
-                <button class="remote-btn nav-extra-btn w-14 h-14 flex-col gap-1" onclick="key('RET')" title="Volver">
-                    <i data-lucide="corner-down-left" class="w-4 h-4"></i><span class="text-[9px] font-bold">BACK</span>
+                <button class="remote-btn h-14 flex-col gap-1" onclick="key('RET')">
+                    <i data-lucide="corner-down-left" class="w-4 h-4 text-indigo-400"></i><span class="text-[9px] font-black uppercase">Back</span>
                 </button>
-                <button class="remote-btn nav-extra-btn w-14 h-14 flex-col gap-1" onclick="key('SET')" title="Opciones">
-                    <i data-lucide="settings" class="w-4 h-4"></i><span class="text-[9px] font-bold">SET</span>
+                <button class="remote-btn h-14 flex-col gap-1" onclick="key('SET')">
+                    <i data-lucide="settings" class="w-4 h-4 text-indigo-400"></i><span class="text-[9px] font-black uppercase">Set</span>
                 </button>
-                <button class="remote-btn nav-extra-btn w-14 h-14 flex-col gap-1" onclick="key('OSD')" title="Info">
-                    <i data-lucide="info" class="w-4 h-4"></i><span class="text-[9px] font-bold">INFO</span>
+                <button class="remote-btn h-14 flex-col gap-1" onclick="key('OSD')">
+                    <i data-lucide="info" class="w-4 h-4 text-indigo-400"></i><span class="text-[9px] font-black uppercase">Info</span>
                 </button>
-            </div>
-
-            <div class="w-full pt-6 border-t border-white/5">
-                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 text-center">Transporte</div>
-                <div class="flex justify-center gap-2 flex-wrap">
-                    <button class="remote-btn transport-btn w-12 h-12 text-red-400" onclick="key('STP')" title="Stop"><i data-lucide="square" class="w-4 h-4 fill-current"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12" onclick="key('PRE')" title="Anterior"><i data-lucide="skip-back" class="w-4 h-4"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12" onclick="key('REV')" title="Rebobinar"><i data-lucide="rewind" class="w-4 h-4 fill-current"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12" onclick="key('PAU')" title="Pausa"><i data-lucide="pause" class="w-4 h-4 fill-current"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12 text-emerald-400" onclick="key('PLA')" title="Reproducir"><i data-lucide="play" class="w-4 h-4 fill-current"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12" onclick="key('FWD')" title="Avance rápido"><i data-lucide="fast-forward" class="w-4 h-4 fill-current"></i></button>
-                    <button class="remote-btn transport-btn w-12 h-12" onclick="key('NXT')" title="Siguiente"><i data-lucide="skip-forward" class="w-4 h-4"></i></button>
-                </div>
             </div>
         </div>
 
-        <!-- Power & Extras -->
+        <!-- Power, Media & Numbers -->
         <div class="flex flex-col gap-6">
             <div class="card">
-                <div class="card-title flex items-center gap-2 mb-4">
-                    <i data-lucide="power" class="w-5 h-5 text-indigo-400"></i>
-                    <span class="text-base font-bold text-white">Energía</span>
+                <div class="card-title flex items-center gap-2 mb-6">
+                    <i data-lucide="play-circle" class="w-5 h-5 text-indigo-400"></i>
+                    <span class="text-base font-bold text-white">Centro de Medios</span>
                 </div>
-                <div class="flex justify-center gap-4">
-                    <button class="remote-btn w-24 h-12 gap-2 text-emerald-400 font-bold" onclick="key('PON')"><i data-lucide="power" class="w-4 h-4"></i> ON</button>
-                    <button class="remote-btn w-24 h-12 gap-2 text-red-400 font-bold" onclick="key('POF')"><i data-lucide="power" class="w-4 h-4"></i> OFF</button>
+                
+                <div class="flex justify-center gap-3 flex-wrap mb-6">
+                    <button class="remote-btn transport-btn w-14 h-14 text-red-400" onclick="key('STP')"><i data-lucide="square" class="fill-current"></i></button>
+                    <button class="remote-btn transport-btn w-14 h-14" onclick="key('PRE')"><i data-lucide="skip-back"></i></button>
+                    <button class="remote-btn transport-btn w-14 h-14" onclick="key('REV')"><i data-lucide="rewind" class="fill-current"></i></button>
+                    <button class="remote-btn transport-btn w-16 h-16 bg-indigo-600/20 border-indigo-500/30 text-white" onclick="key('PAU')"><i data-lucide="pause" class="fill-current"></i></button>
+                    <button class="remote-btn transport-btn w-16 h-16 bg-emerald-600/20 border-emerald-500/30 text-emerald-400" onclick="key('PLA')"><i data-lucide="play" class="fill-current"></i></button>
+                    <button class="remote-btn transport-btn w-14 h-14" onclick="key('FWD')"><i data-lucide="fast-forward" class="fill-current"></i></button>
+                    <button class="remote-btn transport-btn w-14 h-14" onclick="key('NXT')"><i data-lucide="skip-forward"></i></button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
+                    <button class="remote-btn h-12 text-[10px] font-black uppercase tracking-widest gap-2" onclick="key('AUD')">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> Audio Track
+                    </button>
+                    <button class="remote-btn h-12 text-[10px] font-black uppercase tracking-widest gap-2" onclick="key('SUB')">
+                        <i data-lucide="subtitles" class="w-4 h-4"></i> Subtítulos
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="remote-btn h-14 gap-3 text-emerald-400 font-black uppercase tracking-widest text-[10px]" onclick="key('PON')">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center"><i data-lucide="power" class="w-4 h-4"></i></div> Power ON
+                    </button>
+                    <button class="remote-btn h-14 gap-3 text-red-400 font-black uppercase tracking-widest text-[10px]" onclick="key('POF')">
+                        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center"><i data-lucide="power" class="w-4 h-4"></i></div> Power OFF
+                    </button>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-title flex items-center gap-2 mb-4">
-                    <i data-lucide="volume-2" class="w-5 h-5 text-indigo-400"></i>
-                    <span class="text-base font-bold text-white">Audio & Subs</span>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button class="remote-btn h-12 text-xs font-bold" onclick="key('AUD')">Audio Track</button>
-                    <button class="remote-btn h-12 text-xs font-bold" onclick="key('SUB')">Subtítulos</button>
-                    <button class="remote-btn h-12 text-xs font-bold" onclick="key('ZOM')">Zoom</button>
-                    <button class="remote-btn h-12 text-xs font-bold" onclick="key('CLR')">Clear</button>
-                </div>
-            </div>
-            
-            <div class="card">
+            <div class="card overflow-hidden">
                 <div class="card-title flex items-center gap-2 mb-4">
                     <i data-lucide="hash" class="w-5 h-5 text-indigo-400"></i>
                     <span class="text-base font-bold text-white">Teclado Numérico</span>
                 </div>
-                <div class="grid grid-cols-3 gap-3 w-max mx-auto">
+                <div class="grid grid-cols-3 gap-3 w-full max-w-[200px] mx-auto">
                     {% for n in range(1,10) %}
-                    <button class="remote-btn w-14 h-14 font-bold text-lg text-white" onclick="key('NU{{n}}')">{{n}}</button>
+                    <button class="remote-btn w-14 h-14 font-black text-white hover:text-indigo-400" onclick="key('NU{{n}}')">{{n}}</button>
                     {% endfor %}
                     <div class="col-start-2">
-                        <button class="remote-btn w-14 h-14 font-bold text-lg text-white" onclick="key('NU0')">0</button>
+                        <button class="remote-btn w-14 h-14 font-black text-white hover:text-indigo-400" onclick="key('NU0')">0</button>
                     </div>
                 </div>
             </div>
