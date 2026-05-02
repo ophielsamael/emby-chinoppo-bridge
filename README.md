@@ -60,7 +60,7 @@ Esta versión ha sido testeada exhaustivamente en la siguiente configuración, g
 *   **Protocolos de Red**: NFS (v3/v4) o SMB (v2/v3).
 
 ### Hardware Requerido
-*   **Reproductor**: Chinoppo (M9702, M9201, M9203, M9205, M901) o Oppo original (UDP-203/205).
+*   **Reproductor**: Chinoppo (M9702, M9201, M9203, M9205, M901) o Oppo original (UDP-203/205) con Jailbreak.
 *   **Servidor**: NAS (Synology recomendado), PC o Raspberry Pi con soporte para Docker.
 *   **Red**: Conexión Gigabit Ethernet recomendada para contenido 4K UHD.
 

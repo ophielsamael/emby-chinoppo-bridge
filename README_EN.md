@@ -59,7 +59,7 @@ This version has been extensively tested in the following configuration, guarant
 *   **Network Protocols**: NFS (v3/v4) or SMB (v2/v3).
 
 ### Required Hardware
-*   **Player**: Chinoppo (M9702, M9201, M9203, M9205, M901) or original Oppo (UDP-203/205).
+*   **Player**: Chinoppo (M9702, M9201, M9203, M9205, M901) or original Oppo (UDP-203/205) with **Jailbreak**.
 *   **Server**: NAS (Synology recommended), PC, or Raspberry Pi with Docker support.
 *   **Network**: Gigabit Ethernet connection recommended for 4K UHD content.
 
