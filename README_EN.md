@@ -41,7 +41,7 @@ Unlike the original version (which was a manual Python script), Xnoppo Elite V3 
 ## 🚀 Certified Test Environment
 This version has been extensively tested in the following configuration, guaranteeing total stability:
 *   **Server**: Synology DS423+ (Docker).
-*   **Source Players**: Nvidia Shield TV Pro and **Chinoppo M901**.
+*   **Source Players**: Nvidia Shield TV Pro and **Chinoppo M9201**.
 *   **AV Receiver**: Denon AVC-X3800H.
 *   **Access Control**: Successfully tested from **Chrome** browsers and **mobile** devices (iOS/Android).
 
@@ -57,6 +57,11 @@ This version has been extensively tested in the following configuration, guarant
 *   **Docker**: v20.10+ with **Docker Compose**.
 *   **Emby Server**: v4.7+ (API access/remote access recommended).
 *   **Network Protocols**: NFS (v3/v4) or SMB (v2/v3).
+
+### Required Hardware
+*   **Player**: Chinoppo (M9702, M9201, M9203, M9205, M901) or original Oppo (UDP-203/205).
+*   **Server**: NAS (Synology recommended), PC, or Raspberry Pi with Docker support.
+*   **Network**: Gigabit Ethernet connection recommended for 4K UHD content.
 
 ---
 

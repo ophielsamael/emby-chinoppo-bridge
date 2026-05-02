@@ -42,7 +42,7 @@ A diferencia de la versión original (que era un script de Python manual), Xnopp
 ## 🚀 Entorno de Pruebas Certificado
 Esta versión ha sido testeada exhaustivamente en la siguiente configuración, garantizando estabilidad total:
 *   **Servidor**: Synology DS423+ (Docker).
-*   **Reproductores Origen**: Nvidia Shield TV Pro y **Chinoppo M901**.
+*   **Reproductores Origen**: Nvidia Shield TV Pro y **Chinoppo M9201**.
 *   **Receptor AV**: Denon AVC-X3800H.
 *   **Control de Acceso**: Probado con éxito desde navegadores **Chrome** y dispositivos **móviles** (iOS/Android).
 
@@ -58,6 +58,11 @@ Esta versión ha sido testeada exhaustivamente en la siguiente configuración, g
 *   **Docker**: v20.10+ con **Docker Compose**.
 *   **Emby Server**: v4.7+ (se recomienda tener habilitado el acceso remoto/API).
 *   **Protocolos de Red**: NFS (v3/v4) o SMB (v2/v3).
+
+### Hardware Requerido
+*   **Reproductor**: Chinoppo (M9702, M9201, M9203, M9205, M901) o Oppo original (UDP-203/205).
+*   **Servidor**: NAS (Synology recomendado), PC o Raspberry Pi con soporte para Docker.
+*   **Red**: Conexión Gigabit Ethernet recomendada para contenido 4K UHD.
 
 ---
 
