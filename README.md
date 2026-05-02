@@ -27,6 +27,16 @@
 
 ---
 
+## 🐳 ¿Por qué Docker? (La gran diferencia con la v2)
+
+A diferencia de la versión original (que era un script de Python manual), Xnoppo Elite V3 ha sido reconstruido como un servicio nativo de Docker. Esto resuelve los tres grandes problemas de la v2:
+
+1.  **🚀 Instalación en Segundos**: No necesitas instalar Python ni librerías manualmente. Todo lo necesario viene empaquetado en el contenedor.
+2.  **🛡️ Sistema Inmortal**: Gracias a las políticas de Docker, si el sistema detecta un error o el servidor se reinicia, Xnoppo vuelve a levantarse automáticamente en milisegundos.
+3.  **🎨 Gestión Web**: Olvídate de editar archivos de texto con el bloc de notas. Todo se controla desde el nuevo panel visual "Elite Dashboard".
+
+---
+
 ---
 
 ## 🚀 Entorno de Pruebas Certificado
