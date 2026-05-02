@@ -105,7 +105,7 @@ Run out of batteries in your original remote? Can't find your Chinoppo remote? N
 
 Xnoppo Elite V3 includes a fully functional **Virtual Remote Control** optimized for mobile devices.
 
-![Remote Control Screenshot](static/img/remote_preview.png) *(Placeholder: Add your screenshot here)*
+![Remote Control Screenshot](static/img/remote_preview.png)
 
 *   **Touch D-Pad**: Precise navigation through Oppo menus.
 *   **Transport Controls**: One-touch Play, Pause, Stop, and chapter skips.

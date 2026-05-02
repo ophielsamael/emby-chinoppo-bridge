@@ -106,7 +106,7 @@ Para un funcionamiento "Elite", utiliza estas configuraciones probadas:
 
 Xnoppo Elite V3 incluye un **Control Remoto Virtual** totalmente funcional y optimizado para mobiles. 
 
-![Remote Control Screenshot](static/img/remote_preview.png) *(Placeholder: Añade aquí tu captura)*
+![Remote Control Screenshot](static/img/remote_preview.png)
 
 *   **D-Pad Táctil**: Navegación precisa por los menús del Oppo.
 *   **Controles de Transporte**: Play, Pause, Stop y saltos de capítulo con un toque.
