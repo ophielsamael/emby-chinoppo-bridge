@@ -1,4 +1,4 @@
-# 📽️ Xnoppo Elite V3
+# 📽️ Xnoppo Elite V3 (Versión Docker)
 [English Version](./README_EN.md)
 
 ![Xnoppo Banner](static/img/home_bg.png)
