@@ -71,6 +71,9 @@ Esta versión ha sido testeada exhaustivamente en la siguiente configuración, g
 > [!IMPORTANT]
 > Debes tener **Docker** y **Docker Compose** instalados en tu servidor (Synology, Unraid, Linux, etc.) antes de comenzar.
 
+> [!TIP]
+> **¿Eres usuario de Unraid?** Hemos preparado una [guía de instalación rápida específica para Unraid aquí](./UNRAID_INSTALL.md).
+
 1.  **Preparar la Carpeta**:
     Crea una carpeta en tu servidor (ej: `/docker/xnoppo`) y sube todos los archivos de este repositorio dentro de ella.
 2.  **Preparar la Configuración**:
