@@ -95,6 +95,42 @@
                 <button class="btn btn-secondary flex-1 border-red-500/20 text-red-400 hover:bg-red-500/10 hover:border-red-500/50" onclick="restartApp()" data-i18n="restart_app">Reiniciar App</button>
             </div>
         </div>
+
+        <!-- SOFTWARE & UPDATES -->
+        <div class="card flex flex-col">
+            <div class="card-title flex items-center gap-2 mb-4">
+                <i data-lucide="download-cloud" class="w-5 h-5 text-indigo-400"></i>
+                <span class="text-base font-bold text-white">Software y Actualizaciones</span>
+            </div>
+            <div class="bg-white/5 rounded-2xl p-6 border border-white/5 mb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Versión Actual</p>
+                        <p class="text-2xl font-black text-white" id="currentVerDisplay">v3.0.2</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Última Versión</p>
+                        <p class="text-2xl font-black text-slate-400" id="latestVerDisplay">v3.0.2</p>
+                    </div>
+                </div>
+                <div id="updateInfo" class="hidden">
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-3 mb-4">
+                        <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1">Novedades</p>
+                        <p class="text-xs text-indigo-100 opacity-80 italic" id="updateChangelogDetail">Nuevas mejoras de estabilidad disponibles.</p>
+                    </div>
+                </div>
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2">Estado del Software</p>
+                <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 mb-6" id="updateStatusText">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>Tu sistema está actualizado</span>
+                </div>
+                <button id="updateBtn" class="btn btn-secondary w-full" onclick="handleUpdateClick()">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
+                    <span>Buscar Actualización</span>
+                </button>
+            </div>
+            <p class="text-[10px] text-slate-500 text-center italic">Xnoppo Elite V3 — Potenciado por Antigravity Engine</p>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -168,6 +204,90 @@ setInterval(() => {
         loadLog();
     }
 }, 2000);
+
+// --- UPDATE LOGIC ---
+let updateData = null;
+
+async function checkManualUpdate() {
+    const btn = document.getElementById('updateBtn');
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> <span>Buscando...</span>';
+    lucide.createIcons();
+    
+    try {
+        const r = await fetch('/api/update/check');
+        const d = await r.json();
+        updateStatusUI(d);
+        if (!d.new_version) {
+            showToast('Tu sistema ya está actualizado', 'success');
+        }
+    } catch(e) {
+        showToast('Error al buscar actualizaciones', 'error');
+    } finally {
+        btn.disabled = false;
+        if (!updateData || !updateData.new_version) {
+            btn.innerHTML = originalHtml;
+        }
+        lucide.createIcons();
+    }
+}
+
+window.updateStatusUI = function(d) {
+    updateData = d;
+    document.getElementById('currentVerDisplay').innerText = 'v' + d.current_version;
+    document.getElementById('latestVerDisplay').innerText = 'v' + d.latest_version;
+    
+    const statusText = document.getElementById('updateStatusText');
+    const updateInfo = document.getElementById('updateInfo');
+    const btn = document.getElementById('updateBtn');
+    
+    if (d.new_version) {
+        statusText.innerHTML = '<i data-lucide="alert-circle" class="text-indigo-400 w-4 h-4"></i> <span class="text-indigo-400">¡Nueva versión disponible!</span>';
+        updateInfo.classList.remove('hidden');
+        document.getElementById('updateChangelogDetail').innerText = d.changelog;
+        
+        btn.className = "btn btn-primary w-full"; // Change to indigo
+        btn.innerHTML = '<i data-lucide="download" class="w-4 h-4 mr-2"></i> <span>¡Actualizar ahora!</span>';
+    } else {
+        statusText.innerHTML = '<i data-lucide="check-circle-2" class="text-emerald-400 w-4 h-4"></i> <span class="text-emerald-400">Tu sistema está actualizado</span>';
+        updateInfo.classList.add('hidden');
+    }
+    lucide.createIcons();
+}
+
+async function handleUpdateClick() {
+    if (!updateData || !updateData.new_version) {
+        checkManualUpdate();
+    } else {
+        if (!confirm('¿Seguro que deseas actualizar el sistema? El orquestador se reiniciará.')) return;
+        
+        const btn = document.getElementById('updateBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i> <span>Actualizando...</span>';
+        lucide.createIcons();
+        
+        try {
+            const r = await fetch('/api/update/run', {method:'POST'});
+            const d = await r.json();
+            if (d.status === 'ok') {
+                showToast(d.message, 'success');
+                setTimeout(() => window.location.reload(), 5000);
+            } else {
+                showToast(d.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="download" class="w-4 h-4 mr-2"></i> <span>Reintentar Actualización</span>';
+                lucide.createIcons();
+            }
+        } catch(e) {
+            showToast('Error de red durante la actualización', 'error');
+            btn.disabled = false;
+        }
+    }
+}
+
+// Check on load if on this page
+setTimeout(checkManualUpdate, 500);
 </script>
 <style>
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }

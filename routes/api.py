@@ -126,35 +126,70 @@ def get_state():
 
 # ─── Version ──────────────────────────────────────────────────────────────────
 
-@api_bp.route("/version", methods=["GET"])
-def check_version():
-    """Check if a new version is available on GitHub."""
+@api_bp.route("/update/check", methods=["GET"])
+def check_update():
+    """Check if a new version is available on the remote repository."""
     import requests as req
     config = current_app.config["XNOPPO"]
-
+    local_version_file = current_app.config["BASE_DIR"] / "version.json"
+    
     try:
-        url = "https://raw.githubusercontent.com/siberian-git/Xnoppo/main/versions/version.js"
+        # 1. Read local version
+        with open(local_version_file, "r") as f:
+            local_data = json.load(f)
+        current = local_data.get("version", "3.0.0")
+
+        # 2. Check remote (URL can be customized in config)
+        # For now we use the main development point, but can be changed to User's repo
+        url = config.get("Update_URL", "https://raw.githubusercontent.com/siberian-git/Xnoppo-NextGen/main/version.json")
         resp = req.get(url, timeout=10)
         resp.raise_for_status()
-        version_data = resp.json()
+        remote_data = resp.json()
+        
+        latest = remote_data.get("version", "0")
+        changelog = remote_data.get("changelog", "")
 
-        if config.get("check_beta"):
-            latest = version_data.get("beta_version", "0")
-            latest_file = version_data.get("beta_version_file", "")
-        else:
-            latest = version_data.get("curr_version", "0")
-            latest_file = version_data.get("curr_version_file", "")
-
-        current = config.get_version()
         return jsonify({
-            "version": latest,
-            "file": latest_file,
-            "new_version": current < latest,
             "current_version": current,
+            "latest_version": latest,
+            "new_version": latest > current,
+            "changelog": changelog
         })
     except Exception as e:
         logger.error("Version check failed: %s", e)
         return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route("/update/run", methods=["POST"])
+def run_update():
+    """Perform the update (git pull) and restart."""
+    import subprocess
+    import os
+    logger.info("Starting Self-Update process...")
+    
+    try:
+        # 1. Try Git Pull (Assuming it's a git clone)
+        res = subprocess.run(["git", "pull"], capture_output=True, text=True, timeout=30)
+        if res.returncode != 0:
+            logger.warning("Git pull failed or not a git repo: %s", res.stderr)
+            # If not git, we can't easily auto-update files safely from inside Docker
+            return jsonify({"status": "error", "message": "No se pudo actualizar vía Git."}), 500
+        
+        logger.info("Git pull successful: %s", res.stdout)
+        
+        # 2. Trigger restart (Docker will pick it up)
+        # We use a small delay to allow the response to reach the user
+        def delayed_restart():
+            import time
+            time.sleep(2)
+            os._exit(0)
+            
+        threading.Thread(target=delayed_restart, daemon=True).start()
+        
+        return jsonify({"status": "ok", "message": "Actualización completada. Reiniciando..."})
+    except Exception as e:
+        logger.error("Update failed: %s", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 # ─── Device Testing ──────────────────────────────────────────────────────────

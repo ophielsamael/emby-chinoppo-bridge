@@ -409,6 +409,24 @@
 
         <main class="content">
             <div class="max-w-[1600px] mx-auto">
+                <!-- Update Notification Banner -->
+                <div id="updateBanner" class="hidden mb-6">
+                    <div class="bg-indigo-600/90 backdrop-blur-md border border-indigo-400/30 rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-indigo-600/20">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/20 p-2 rounded-xl">
+                                <i data-lucide="sparkles" class="text-white w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-sm">¡Nueva actualización disponible!</h4>
+                                <p class="text-indigo-100 text-xs opacity-80" id="updateChangelog">Descubre las nuevas funciones y mejoras de Xnoppo Elite.</p>
+                            </div>
+                        </div>
+                        <a href="/status" class="bg-white text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tight hover:bg-indigo-50 transition-colors">
+                            Ver Novedades
+                        </a>
+                    </div>
+                </div>
+                
                 {% block content %}{% endblock %}
             </div>
         </main>
