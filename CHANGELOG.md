@@ -1,5 +1,18 @@
 # Changelog - Xnoppo Elite V3
 
+## [3.0.4] - 2026-05-03
+### 🇪🇸 Español
+#### Corregido
+- **Blindaje de Tipos (Emby)**: Corregido error crítico `TypeError` al concatenar IDs de Emby en servidores donde se interpretan como números.
+- **Estabilidad de API**: Refactorización de la comunicación HTTP para prevenir fallos de concatenación de cadenas.
+
+### 🇬🇧 English
+#### Fixed
+- **Type Safety (Emby)**: Fixed critical `TypeError` when concatenating Emby IDs on servers where they are interpreted as integers.
+- **API Stability**: Refactored HTTP communication to prevent string concatenation crashes.
+
+---
+
 ## [3.0.3] - 2026-05-03
 ### 🇪🇸 Español
 #### Añadido

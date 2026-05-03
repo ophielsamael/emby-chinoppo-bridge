@@ -116,7 +116,7 @@ class EmbyHttpClient:
         return self._get("{server}/emby/Sessions")
 
     def get_session_details(self, session_id: str):
-        return self._get("{server}/emby/Sessions/" + session_id + "?format=json")
+        return self._get("{server}/emby/Sessions/" + str(session_id) + "?format=json")
 
     # ── Session capabilities ────────────────────────────────────────────────
 
@@ -219,12 +219,12 @@ class EmbyHttpClient:
         self._post(url, {"played": played, "PlaybackPositionTicks": position})
 
     def playback_stop(self, session_id: str):
-        url = f"{{server}}/emby/Sessions/{session_id}/Command/Stop?format=json"
+        url = f"{{server}}/emby/Sessions/{str(session_id)}/Command/Stop?format=json"
         self._post(url, {})
 
     def send_message(self, session_id: str, text: str, timeout_ms: int = 3500):
-        url = (f"{{server}}/emby/Sessions/{session_id}/Message"
-               f"?Text={urllib.parse.quote(text)}&Header=Notification&TimeoutMs={timeout_ms}")
+        url = (f"{{server}}/emby/Sessions/{str(session_id)}/Message"
+               f"?Text={urllib.parse.quote(str(text))}&Header=Notification&TimeoutMs={str(timeout_ms)}")
         self._post(url, {})
 
     def send_user_message(self, user_id: str, text: str, timeout_ms: int = 3500):
@@ -238,17 +238,17 @@ class EmbyHttpClient:
     # ── Item info ────────────────────────────────────────────────────────────
 
     def get_item_info(self, user_id: str, item_id: str) -> dict:
-        return self._get("{server}/emby/Users/" + user_id + "/Items/" + item_id)
+        return self._get("{server}/emby/Users/" + str(user_id) + "/Items/" + str(item_id))
 
     def get_item_info2(self, user_id: str, item_id: str, media_source_id: str) -> dict:
-        data = self._get("{server}/emby/Users/" + user_id + "/Items/" + item_id)
+        data = self._get("{server}/emby/Users/" + str(user_id) + "/Items/" + str(item_id))
         for source in data.get("MediaSources", []):
             if source.get("Id") == media_source_id:
                 return source
         return data
 
     def get_user_views(self, user_id: str) -> list:
-        data = self._get("{server}/emby/Users/" + user_id + "/Views?IncludeExternalContent=false")
+        data = self._get("{server}/emby/Users/" + str(user_id) + "/Views?IncludeExternalContent=false")
         return data.get("Items", [])
 
     def get_emby_selectablefolders(self) -> list:
@@ -263,7 +263,7 @@ class EmbyHttpClient:
     def get_session_user_info(self, user_id: str, device_id: str) -> dict:
         import time as _time
         _time.sleep(1)
-        sessions = self._get("{server}/emby/Sessions?DeviceId=" + device_id)
+        sessions = self._get("{server}/emby/Sessions?DeviceId=" + str(device_id))
         if isinstance(sessions, list):
             return sessions[0] if sessions else {}
         return {}
@@ -282,8 +282,8 @@ class EmbyHttpClient:
 
     def set_movie(self, session_id: str, item_id: str,
                   item_type: str, item_name: str):
-        url = (f"{{server}}/emby/Sessions/{session_id}/Viewing"
-               f"?ItemType={item_type}&ItemId={item_id}&ItemName={urllib.parse.quote(item_name)}")
+        url = (f"{{server}}/emby/Sessions/{str(session_id)}/Viewing"
+               f"?ItemType={str(item_type)}&ItemId={str(item_id)}&ItemName={urllib.parse.quote(str(item_name))}")
         self._post(url, {})
 
     def get_xnoppo_audio_index(self, user_id: str, item_id: str, index: int) -> int:

@@ -83,7 +83,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
 
     # Get item info from Emby
     item_info = session.get_item_info2(
-        session.user_info["User"]["Id"], params["item_id"], params["media_source_id"]
+        str(session.user_info["User"]["Id"]), str(params["item_id"]), str(params["media_source_id"])
     )
 
     file_path = item_info.get("Path", "")
@@ -328,7 +328,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
     # Set audio track
     try:
         audio_idx = session.get_xnoppo_audio_index(
-            params["ControllingUserId"], params["item_id"], params["audio_stream_index"]
+            str(params["ControllingUserId"]), str(params["item_id"]), int(params["audio_stream_index"])
         )
         client.set_audio_track(audio_idx)
     except Exception:
@@ -354,7 +354,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
     # Set subtitles
     try:
         subs_idx = session.get_xnoppo_subs_index(
-            params["ControllingUserId"], params["item_id"], params["subtitle_stream_index"]
+            str(params["ControllingUserId"]), str(params["item_id"]), int(params["subtitle_stream_index"])
         )
         client.set_subtitle_track(subs_idx)
     except Exception:
@@ -431,7 +431,7 @@ def play_other(session: EmbyHttpClient, data: dict, config: dict):
     params = session.process_data(data)
     try:
         item_info = session.get_item_info2(
-            session.user_info["User"]["Id"], params["item_id"], params["media_source_id"]
+            str(session.user_info["User"]["Id"]), str(params["item_id"]), str(params["media_source_id"])
         )
     except EmbyConnectionError as e:
         logger.error("Cannot fetch item info for replay: %s", e)
