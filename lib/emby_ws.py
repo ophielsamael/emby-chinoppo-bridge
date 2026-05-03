@@ -216,6 +216,12 @@ class EmbyWebSocketClient:
             return
 
         logger.info("¡EVENTO %s DETECTADO! %s en %s", m_type.upper(), item_name, s_name)
+        
+        # ── IMMEDIATE KILL (Aggressive Hijack) ──
+        if self.EmbySession and data.get("SessionId"):
+            try: self.EmbySession.playback_stop(data.get("SessionId"))
+            except: pass
+            
         self.MonitoredState = item_name
         
         # Construct data packet
@@ -321,10 +327,10 @@ class EmbyWebSocketClient:
                     item_name = now_playing.get("Name", "")
                     item_id = now_playing.get("Id")
                     
-                    # Global Post-Cleanup Cooldown: Prevent ANY ghost starts for 15s after Xnoppo stops a movie
+                    # Global Post-Cleanup Cooldown: Prevent ANY ghost starts for 30s after Xnoppo stops a movie
                     if self.EmbySession:
                         last_cleanup = getattr(self.EmbySession, "last_cleanup_time", 0)
-                        if _time.time() - last_cleanup < 15:
+                        if _time.time() - last_cleanup < 30:
                             return
                     
                     # Strict Debounce: Never re-trigger the EXACT same item if Xnoppo is already handling it
@@ -336,9 +342,9 @@ class EmbyWebSocketClient:
                             # It's already playing on the Oppo! Do not restart the movie.
                             return
                         
-                        # If playstate is Free, wait at least 15s to avoid double-clicks
+                        # If playstate is Free, wait at least 30s to avoid double-clicks or ISO re-triggers
                         last_time = last_trigger.get(f"{s_id}_time", 0)
-                        if _time.time() - last_time < 15:
+                        if _time.time() - last_time < 30:
                             return
 
                     # Use lock to prevent simultaneous triggers
@@ -348,6 +354,11 @@ class EmbyWebSocketClient:
                     try:
                         image_tag = now_playing.get("ImageTags", {}).get("Primary", "")
                         logger.info("¡MATCH! El dispositivo monitorizado (%s) está reproduciendo: %s", s_name, item_name)
+                        
+                        # ── IMMEDIATE KILL (Aggressive Hijack) ──
+                        if self.EmbySession and session.get("Id"):
+                            try: self.EmbySession.playback_stop(session.get("Id"))
+                            except: pass
                         
                         # ── INSTANT TAKEOVER ──
                         # Assign ID now so old session dies immediately

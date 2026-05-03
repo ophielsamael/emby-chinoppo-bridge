@@ -77,6 +77,7 @@ This version has been extensively tested in the following configuration, guarant
 3.  **Deploy the Container**:
     Open a terminal in that folder and run:
     ```bash
+    cd Xnoppo-NextGen
     sudo docker-compose up -d --build
     ```
     *(You will be prompted for your **administrator password** to authorize the installation).*

@@ -98,16 +98,16 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
                 logger.info("Ruta recuperada desde MediaSources: %s (Container: %s)", file_path, container)
                 break
 
-    # Notify user
-    _notify_user(session, params, "Xnoppo: Cargando en Oppo...", config)
-
-    # STOP internal playback on the monitored device
+    # 1. IMMEDIATE STOP of internal playback (Kill it as fast as possible)
     try:
         if params.get("Session_id"):
             session.playback_stop(params["Session_id"])
             logger.info("Stopped original Emby session: %s", params["Session_id"])
     except Exception as e:
         logger.warning("Could not stop original session: %s", e)
+
+    # 2. Notify user
+    _notify_user(session, params, "Xnoppo: Cargando en Oppo...", config)
 
     # Initialize Oppo
     client.get_firmware_version()
@@ -367,7 +367,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
     is_muted = False
     global_info = client.get_global_info()
 
-    while '"is_video_playing":true' in global_info:
+    while True:
         _time.sleep(1)
         
         # Check if we were superseded by a newer session
@@ -378,7 +378,20 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
         if session.playstate == "Replay":
             logger.info("Replay detectado en sesión #%d — cediendo control.", my_id)
             return # EXIT IMMEDIATELY without calling _cleanup
+            
         global_info = client.get_global_info()
+        
+        # If video stops, wait 5s to see if it's just an ISO transition (intro -> movie)
+        if '"is_video_playing":true' not in global_info:
+            logger.debug("Vídeo detenido en sesión #%d. Esperando 5s por posible transición...", my_id)
+            _time.sleep(5)
+            global_info = client.get_global_info()
+            if '"is_video_playing":true' not in global_info:
+                logger.info("Vídeo detenido definitivamente en sesión #%d.", my_id)
+                break
+            else:
+                logger.info("Transición de ISO detectada. Continuando monitorización.")
+
         if '"is_video_playing":true' in global_info:
             try:
                 pt = client.get_playing_time()
@@ -405,7 +418,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
         pass
 
     # Courtesy delay to allow a new session to take over if we are switching
-    _time.sleep(3)
+    _time.sleep(1)
 
     # Only cleanup if this is still the active session
     if _is_session_active(my_id):

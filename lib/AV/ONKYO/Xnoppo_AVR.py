@@ -171,16 +171,45 @@ def av_change_hdmi(config):
     except:
         return("Error en el cambio")
 
+def av_get_current_input(config):
+    logging.info('Onkyo Get Current Input')
+    try:
+        receiver = eiscp.eISCP(config["AV_Ip"])
+        # Querying the current source
+        res = receiver.command('input selector query')
+        receiver.disconnect()
+        # res looks like ('input-selector', 'dvd') or similar
+        if isinstance(res, tuple) and len(res) > 1:
+            return res[1]
+        return None
+    except:
+        return None
+
+def av_set_input(config, input_val):
+    logging.info('Onkyo Set Input: %s', input_val)
+    try:
+        receiver = eiscp.eISCP(config["AV_Ip"])
+        # If input_val is a friendly name like 'dvd', 'game', etc.
+        receiver.command(f'input-selector {input_val}')
+        receiver.disconnect()
+        return "OK"
+    except:
+        # Fallback to raw if friendly command fails
+        try:
+            receiver = eiscp.eISCP(config["AV_Ip"])
+            receiver.raw(input_val)
+            receiver.disconnect()
+            return "OK"
+        except:
+            return "Error"
+
 def av_power_off(config):
     logging.info('Llamada a av_power_off')
     try:
         receiver = eiscp.eISCP(config["AV_Ip"])
-        onk_status = receiver.command('power query')
-        logging.info('Onkyo Power Status: %s',onk_status[1])
-        receiver.raw('PWR00')
+        receiver.command('power off')
         receiver.disconnect()
         return("OK")
     except:
         return("Error")
-    return("OK")
 

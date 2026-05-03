@@ -78,6 +78,7 @@ Esta versión ha sido testeada exhaustivamente en la siguiente configuración, g
 3.  **Desplegar el Contenedor**:
     Abre una terminal en esa carpeta y ejecuta:
     ```bash
+    cd Xnoppo-NextGen
     sudo docker-compose up -d --build
     ```
     *(Se te pedirá la **contraseña de administrador** para autorizar la instalación).*
