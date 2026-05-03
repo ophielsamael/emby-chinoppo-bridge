@@ -10,9 +10,9 @@
         ONLINE
     </div>
     <div class="absolute inset-0 flex flex-col justify-center px-10">
-        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">PROCESAMIENTO DE AUDIO ELITE</span>
-        <h1 class="text-4xl font-black text-white tracking-tighter">Receptor <span class="text-slate-400">Audio/Vídeo</span></h1>
-        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Gestión de potencia y entradas para el sistema multicanal.</p>
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2" data-i18n="elite_audio">PROCESAMIENTO DE AUDIO ELITE</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter" data-i18n="avr">Receptor Audio/Vídeo</h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1" data-i18n="av_desc">Gestión de potencia y entradas para el sistema multicanal.</p>
     </div>
 </div>
 
@@ -21,34 +21,34 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="speaker" class="w-5 h-5 text-indigo-400"></i>
-                <span class="text-base font-bold text-white">Configuración AV</span>
+                <span class="text-base font-bold text-white" data-i18n="av_config">Configuración AV</span>
             </div>
             
             <div class="toggle-wrapper">
                 <div>
-                    <div class="toggle-label">Activar control AV</div>
-                    <div class="toggle-description">Automatizar encendido y HDMI</div>
+                    <div class="toggle-label" data-i18n="enable_av_control">Activar control AV</div>
+                    <div class="toggle-description" data-i18n="auto_power_hdmi">Automatizar encendido y HDMI</div>
                 </div>
                 <label class="switch"><input type="checkbox" id="AV" onchange="toggleAVFields()"><span class="slider"></span></label>
             </div>
 
             <div id="avFieldsContainer" class="mt-6">
                 <div class="form-group">
-                    <label>Marca del Receptor</label>
+                    <label data-i18n="av_brand">Marca del Receptor</label>
                     <select id="AV_model" class="form-control">
-                        <option value="">— Seleccionar Marca —</option>
+                        <option value="" data-i18n="select_brand">— Seleccionar Marca —</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>IP del receptor AV</label>
+                    <label data-i18n="av_ip">IP del receptor AV</label>
                     <input type="text" id="AV_Ip" class="form-control" placeholder="192.168.1.105">
                 </div>
                 <div class="form-group">
-                    <label>Puerto</label>
+                    <label data-i18n="port">Puerto</label>
                     <input type="number" id="AV_Port" class="form-control" placeholder="23">
                 </div>
                 <div class="form-group">
-                    <label>Entrada HDMI</label>
+                    <label data-i18n="av_input">Entrada HDMI (Oppo)</label>
                     <select id="AV_Input" class="form-control">
                         <option value="">-- Cargando entradas... --</option>
                     </select>
@@ -57,35 +57,35 @@
                     </div>
                 </div>
                 <div class="form-group mt-4">
-                    <label>Delay cambio HDMI (seg)</label>
+                    <label data-i18n="av_delay_hdmi">Delay cambio HDMI (seg)</label>
                     <input type="number" id="av_delay_hdmi" class="form-control" min="0" max="30">
                 </div>
                 
                 <div class="toggle-wrapper">
                     <div>
-                        <div class="toggle-label">AV Always ON</div>
-                        <div class="toggle-description">No apagar el AV al finalizar</div>
+                        <div class="toggle-label" data-i18n="av_always_on">AV Always ON</div>
+                        <div class="toggle-description" data-i18n="av_always_on_desc">No apagar el AV al finalizar</div>
                     </div>
                     <label class="switch"><input type="checkbox" id="AV_Always_ON"><span class="slider"></span></label>
                 </div>
             </div>
             
             <div class="mt-8 flex justify-between items-center">
-                <button class="btn btn-primary" onclick="saveAVConfig()">Guardar</button>
+                <button class="btn btn-primary" onclick="saveAVConfig()" data-i18n="save">Guardar</button>
                 <a href="/other" class="btn btn-secondary text-xs">Otros →</a>
             </div>
         </div>
 
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
-                <i data-lucide="activity" class="w-5 h-5 text-emerald-400"></i>
-                <span class="text-base font-bold text-white">Test de Conectividad</span>
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                <span class="text-base font-bold text-white" data-i18n="help">Herramientas de Diagnóstico</span>
             </div>
-            <div class="mt-4">
-                <button class="btn btn-test" id="btnTestConn" onclick="testAV('conn')">Probar Conexión</button>
-                <button class="btn btn-test" onclick="testAV('on')">Probar Power ON</button>
-                <button class="btn btn-test" onclick="testAV('hdmi')">Probar cambio HDMI</button>
-                <button class="btn btn-test" onclick="testAV('off')">Probar Power OFF</button>
+            <div class="flex flex-col gap-3">
+                <button class="btn btn-test" onclick="testAV('conn')" data-i18n="test_connection">Probar Conexión</button>
+                <button class="btn btn-test" onclick="testAV('on')" data-i18n="test_power_on">Probar Power ON</button>
+                <button class="btn btn-test" onclick="testAV('hdmi')" data-i18n="test_hdmi">Probar cambio HDMI</button>
+                <button class="btn btn-test" onclick="testAV('off')" data-i18n="test_power_off">Probar Power OFF</button>
             </div>
         </div>
     </div>

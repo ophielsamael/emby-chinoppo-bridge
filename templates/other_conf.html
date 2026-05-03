@@ -10,10 +10,10 @@
             <div class="w-10 h-10 bg-indigo-600/20 rounded-xl flex items-center justify-center border border-indigo-500/30">
                 <i data-lucide="settings-2" class="text-indigo-400 w-5 h-5"></i>
             </div>
-            <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px]">AJUSTES DEL SISTEMA</span>
+            <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px]" data-i18n="system_tools">AJUSTES DEL SISTEMA</span>
         </div>
-        <h1 class="text-4xl font-black text-white tracking-tighter">Opciones <span class="text-slate-400">Avanzadas</span></h1>
-        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Configuración del motor de orquestación y monitoreo de red.</p>
+        <h1 class="text-4xl font-black text-white tracking-tighter" data-i18n="advanced_config">Opciones Avanzadas</h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1" data-i18n="other_desc">Configuración del motor de orquestación y monitoreo de red.</p>
     </div>
 </div>
 
@@ -23,11 +23,11 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="globe" class="w-5 h-5 text-indigo-400"></i>
-                <span class="text-base font-bold text-white">General</span>
+                <span class="text-base font-bold text-white" data-i18n="other">General</span>
             </div>
             <div class="mt-6">
                 <div class="form-group">
-                    <label>Nivel de Depuración (Log)</label>
+                    <label data-i18n="debug_level">Nivel de Depuración (Log)</label>
                     <select id="DebugLevel" class="form-control">
                         <option value="0">0 — Sin log</option>
                         <option value="1">1 — Errores</option>
@@ -46,13 +46,13 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="monitor" class="w-5 h-5 text-emerald-400"></i>
-                <span class="text-base font-bold text-white">Dispositivo Monitorizado</span>
+                <span class="text-base font-bold text-white" data-i18n="sys_status">Dispositivo Monitorizado</span>
             </div>
             <div class="mt-6">
                 <div class="form-group">
-                    <label>Dispositivo a Controlar</label>
+                    <label data-i18n="tv">Dispositivo a Controlar</label>
                     <select id="MonitoredDevice" class="form-control" onchange="updateDeviceImage()">
-                        <option value="">— Seleccionar Dispositivo —</option>
+                        <option value="" data-i18n="select_brand">— Seleccionar Dispositivo —</option>
                     </select>
                     <div class="mt-3">
                         <button class="btn btn-secondary text-xs" onclick="refreshDevices()">↻ Refrescar Lista</button>
@@ -149,7 +149,7 @@ function updateDeviceImage() {
     }
 }
 
-async function refreshDevices() {
+async function refreshDevices(silent = false) {
     const sel = document.getElementById('MonitoredDevice');
     if(sel) sel.innerHTML = '<option>Cargando dispositivos...</option>';
     try {
@@ -168,21 +168,18 @@ async function refreshDevices() {
                 });
             }
             updateDeviceImage();
-            showToast('Dispositivos actualizados', 'success');
+            if (!silent) showToast('Dispositivos actualizados', 'success');
         } else {
             if(sel) sel.innerHTML = '<option value="">-- Error al cargar --</option>';
         }
     } catch(e) { 
         if(sel) sel.innerHTML = '<option value="">Error de red</option>';
-        showToast('Error al conectar con el servidor', 'error');
+        if (!silent) showToast('Error al conectar con el servidor', 'error');
     }
 }
-refreshDevices();
+refreshDevices(true);
 
-async function checkUpdates() {
-    showToast('Buscando actualizaciones...', 'info');
-    setTimeout(() => showToast('Tu sistema está actualizado', 'success'), 2000);
-}
+// --- UPDATE LOGIC MOVED TO SIDEBAR ---
 
 async function saveAdvancedConfig() {
     const payload = Object.assign({}, cfg, {

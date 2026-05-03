@@ -10,9 +10,9 @@
         ONLINE
     </div>
     <div class="absolute inset-0 flex flex-col justify-center px-10">
-        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">VISUALIZACIÓN DE ALTA GAMA</span>
-        <h1 class="text-4xl font-black text-white tracking-tighter">Televisor / <span class="text-slate-400">Proyector</span></h1>
-        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Control de encendido y conmutación automática de entradas.</p>
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2" data-i18n="elite_video">VISUALIZACIÓN DE ALTA GAMA</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter" data-i18n="tv_projector">Televisor / Proyector</h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1" data-i18n="tv_desc">Control de encendido y conmutación automática de entradas.</p>
     </div>
 </div>
 
@@ -21,26 +21,26 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="tv" class="w-5 h-5 text-indigo-400"></i>
-                <span class="text-base font-bold text-white">Configuración TV</span>
+                <span class="text-base font-bold text-white" data-i18n="tv_config">Configuración TV</span>
             </div>
             
             <div class="toggle-wrapper">
                 <div>
-                    <div class="toggle-label">Activar control de TV</div>
-                    <div class="toggle-description">Automatizar HDMI y Power</div>
+                    <div class="toggle-label" data-i18n="enable_tv_control">Activar control de TV</div>
+                    <div class="toggle-description" data-i18n="auto_power_hdmi">Automatizar HDMI y Power</div>
                 </div>
                 <label class="switch"><input type="checkbox" id="TV" onchange="toggleTVFields()"><span class="slider"></span></label>
             </div>
 
             <div id="tvFieldsContainer" class="mt-6">
                 <div class="form-group">
-                    <label>Modelo TV</label>
+                    <label data-i18n="av_brand">Modelo TV</label>
                     <select id="TV_model" class="form-control">
-                        <option value="">— Seleccionar Marca —</option>
+                        <option value="" data-i18n="select_brand">— Seleccionar Marca —</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>IP del televisor</label>
+                    <label data-i18n="tv_ip">IP del televisor</label>
                     <input type="text" id="TV_IP" class="form-control" placeholder="192.168.1.146">
                 </div>
                 <div class="form-group">

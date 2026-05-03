@@ -1,26 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Rutas{% endblock %}
+{% block title %}Paths{% endblock %}
 {% block content %}
 <div class="page-header">
-    <h2>Rutas de Red</h2>
-    <p class="page-description">Mapeo entre rutas Emby y rutas del Oppo</p>
+    <h2 data-i18n="paths">Rutas de Red</h2>
+    <p class="page-description" data-i18n="paths_desc">Mapeo entre rutas Emby y rutas del Oppo</p>
 </div>
 <div class="page-body">
     <div class="card mb-24">
-        <div class="card-title">
-            <div class="card-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="card-title" data-i18n="network_paths">
             Servidores configurados
         </div>
         <div id="serverList"></div>
         <div class="btn-group mt-24">
-            <button class="btn btn-secondary" onclick="addServer()">+ Añadir</button>
+            <button class="btn btn-secondary" onclick="addServer()">+ <span data-i18n="save">Añadir</span></button>
             <button class="btn btn-secondary" id="btnBrowse" onclick="openNetworkBrowser(-1)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Explorar Red (Oppo)
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="check_updates">Explorar Red (Oppo)</span>
             </button>
-            <button class="btn btn-secondary" id="btnAuto" onclick="autoCompletePaths()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21v-5h5"/></svg>Autocompletar desde Emby
+            <button class="btn btn-secondary" id="btnAuto" onclick="autoCompletePaths()" data-i18n="fetch_libraries">
+                Autocompletar desde Emby
             </button>
-            <button class="btn btn-primary" onclick="saveServers()">Guardar</button>
+            <button class="btn btn-primary" onclick="saveServers()" data-i18n="save">Guardar</button>
         </div>
     </div>
 
@@ -150,17 +149,17 @@ function renderServers() {
     el.innerHTML = servers.map((s,i) => `
         <div class="card" style="margin-bottom:12px;background:var(--bg-primary)">
             <div class="flex-between" style="margin-bottom:12px">
-                <b style="color:var(--text-secondary)">Servidor ${i+1}</b>
+                <b style="color:var(--text-secondary)">Server ${i+1}</b>
                 <div style="display:flex;gap:6px;align-items:center;">
                     <span id="testBadge${i}"></span>
-                    <button class="btn btn-danger" style="padding:4px 10px;font-size:.7rem" onclick="servers.splice(${i},1);renderServers()">Eliminar</button>
+                    <button class="btn btn-danger" style="padding:4px 10px;font-size:.7rem" onclick="servers.splice(${i},1);renderServers()" data-i18n="other">Eliminar</button>
                 </div>
             </div>
-            <div class="form-group"><label>Nombre</label><input class="form-control" value="${s.name||''}" oninput="servers[${i}].name=this.value"></div>
+            <div class="form-group"><label data-i18n="title">Nombre</label><input class="form-control" value="${s.name||''}" oninput="servers[${i}].name=this.value"></div>
             <div class="grid-2">
-                <div class="form-group"><label>Ruta Emby (Carpeta real)</label><input class="form-control" value="${s.Emby_Path||''}" oninput="servers[${i}].Emby_Path=this.value"></div>
+                <div class="form-group"><label data-i18n="emby_path">Ruta Emby (Carpeta real)</label><input class="form-control" value="${s.Emby_Path||''}" oninput="servers[${i}].Emby_Path=this.value"></div>
                 <div class="form-group">
-                    <label>Ruta Oppo</label>
+                    <label data-i18n="oppo_path">Ruta Oppo</label>
                     <div style="display:flex;gap:6px;margin-bottom:6px;">
                         <input class="form-control" id="oppoPath${i}" value="${s.Oppo_Path||''}" oninput="servers[${i}].Oppo_Path=this.value; updatePathPreview(${i})" style="flex:1;">
                         <button class="btn btn-secondary" style="padding:6px 12px;font-size:.7rem;white-space:nowrap;" onclick="openNetworkBrowser(${i})" title="Buscar ruta en el Oppo">

@@ -10,9 +10,9 @@
         ONLINE
     </div>
     <div class="absolute inset-0 flex flex-col justify-center px-10">
-        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2">REPRODUCTOR DE REFERENCIA</span>
-        <h1 class="text-4xl font-black text-white tracking-tighter">Oppo <span class="text-slate-400">UDP-203</span></h1>
-        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1">Configuración completa de red y orquestación física del reproductor.</p>
+        <span class="text-indigo-400 font-black tracking-[0.3em] uppercase text-[9px] mb-2" data-i18n="smart_system_active">REPRODUCTOR DE REFERENCIA</span>
+        <h1 class="text-4xl font-black text-white tracking-tighter">Oppo UDP-203/205</h1>
+        <p class="text-slate-400 text-xs max-w-md opacity-80 mt-1" data-i18n="oppo_desc">Configuración completa de red y orquestación física del reproductor.</p>
     </div>
 </div>
 
@@ -21,12 +21,12 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="disc" class="w-5 h-5 text-indigo-400"></i>
-                <span class="text-base font-bold text-white">Conexión Oppo</span>
+                <span class="text-base font-bold text-white" data-i18n="oppo_player">Conexión Oppo</span>
             </div>
             
             <div class="mt-6">
                 <div class="form-group">
-                    <label>Dirección IP del Oppo</label>
+                    <label data-i18n="oppo_player">Dirección IP del Oppo</label>
                     <input type="text" id="Oppo_IP" class="form-control" placeholder="192.168.1.141">
                 </div>
                 <div class="form-group">
@@ -44,7 +44,7 @@
             </div>
             
             <div class="mt-8 flex justify-between items-center">
-                <button class="btn btn-primary" onclick="saveOppoConfig()">Guardar</button>
+                <button class="btn btn-primary" onclick="saveOppoConfig()" data-i18n="save">Guardar</button>
                 <a href="/libraries" class="btn btn-secondary text-xs">Bibliotecas →</a>
             </div>
         </div>
@@ -52,7 +52,7 @@
         <div class="card">
             <div class="card-title flex items-center gap-2 mb-4">
                 <i data-lucide="settings-2" class="w-5 h-5 text-slate-400"></i>
-                <span class="text-base font-bold text-white">Opciones Avanzadas</span>
+                <span class="text-base font-bold text-white" data-i18n="advanced_config">Opciones Avanzadas</span>
             </div>
             <div class="mt-4">
                 <div class="toggle-wrapper">
