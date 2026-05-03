@@ -1,5 +1,5 @@
 # Guía de Instalación en Unraid - Xnoppo Elite V3
-Gracias a la Colaboracion de deibit
+# Gracias a la Colaboracion de deibit
 Esta guía detalla los pasos para instalar Xnoppo Elite V3 en un servidor Unraid utilizando **Compose Manager Plus**.
 
 ### 1. Preparación de la Carpeta (Share)
