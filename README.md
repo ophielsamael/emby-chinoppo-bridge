@@ -3,7 +3,7 @@
 
 ![Xnoppo Banner](static/img/home_bg.png)
 
-**Xnoppo Elite V3** es una evolución mayor del proyecto original [Xnoppo v2](siberian](https://github.com/siberian-git/Xnoppo). Se ha rediseñado desde cero para ofrecer una experiencia visual de lujo y una robustez técnica superior.
+**Xnoppo Elite V3** es una evolución mayor del proyecto original [Xnoppo v2] (https://github.com/siberian-git/Xnoppo). Se ha rediseñado desde cero para ofrecer una experiencia visual de lujo y una robustez técnica superior.
 
 ---
 
