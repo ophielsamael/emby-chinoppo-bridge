@@ -441,9 +441,9 @@
                                 <p class="text-indigo-100 text-xs opacity-80" id="updateChangelog" data-i18n="update_desc">Descubre las nuevas funciones y mejoras de Xnoppo Elite.</p>
                             </div>
                         </div>
-                        <a href="/status" class="bg-white text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tight hover:bg-indigo-50 transition-colors" data-i18n="view_news">
+                        <button onclick="openUpdateModal()" class="bg-white text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tight hover:bg-indigo-50 transition-all active:scale-95 shadow-lg shadow-white/10" data-i18n="view_news">
                             Ver Novedades
-                        </a>
+                        </button>
                     </div>
                 </div>
                 
@@ -471,7 +471,83 @@
                     <span class="text-2xl">🇬🇧</span> <span>English</span>
                 </button>
             </div>
-            <p class="text-[10px] text-slate-500 mt-8 font-bold uppercase tracking-widest opacity-50">Xnoppo Elite v3.0.3</p>
+            <p class="text-[10px] text-slate-500 mt-8 font-bold uppercase tracking-widest opacity-50">Xnoppo Elite v3.0.4</p>
+        </div>
+    </div>
+
+    <!-- Global Update Modal -->
+    <div id="globalUpdateModal" class="hidden fixed inset-0 z-[100] items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#0f172a]/95 backdrop-blur-md" onclick="closeUpdateModal()"></div>
+        <div class="relative w-full max-w-2xl bg-[#1e293b] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+            <div class="p-8">
+                <div class="flex items-start justify-between mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
+                            <i data-lucide="rocket" class="text-white w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-black text-white tracking-tighter" data-i18n="whats_new">¿Qué hay de nuevo?</h2>
+                            <p class="text-indigo-300 text-[10px] font-bold uppercase tracking-[0.2em] mt-1" id="modalVersionLabel">Xnoppo Elite Update</p>
+                        </div>
+                    </div>
+                    <button onclick="closeUpdateModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 transition-all">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div class="bg-[#0f172a]/50 rounded-3xl p-6 border border-white/5 max-h-[50vh] overflow-y-auto custom-scrollbar mb-8">
+                    <div id="updateDetailsContent" class="prose prose-invert prose-sm max-w-none text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
+                        Cargando novedades...
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button onclick="closeUpdateModal()" class="flex-1 py-4 rounded-2xl bg-white/5 text-slate-400 font-bold hover:bg-white/10 transition-all border border-white/5" data-i18n="later">Más tarde</button>
+                    <button onclick="openManualUpdateModal()" class="flex-[2] py-4 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-wider hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20" data-i18n="how_to_update">¿Cómo actualizar?</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Update Guide Modal -->
+    <div id="manualUpdateModal" class="hidden fixed inset-0 z-[110] items-center justify-center p-4">
+        <div class="absolute inset-0 bg-[#0f172a]/98 backdrop-blur-xl" onclick="closeManualModal()"></div>
+        <div class="relative w-full max-w-lg bg-[#1e293b] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="p-8">
+                <div class="flex flex-col items-center text-center mb-8">
+                    <div class="w-16 h-16 bg-amber-500/20 rounded-2xl flex items-center justify-center mb-4 border border-amber-500/30">
+                        <i data-lucide="alert-triangle" class="text-amber-400 w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white tracking-tighter mb-2">Actualización Manual Requerida</h2>
+                    <p class="text-slate-400 text-xs leading-relaxed">Debido a que Xnoppo se ejecuta en un <b>contenedor Docker</b>, la actualización directa desde la web está restringida para preservar la estabilidad de tu configuración.</p>
+                </div>
+
+                <div class="space-y-4 mb-8">
+                    <div class="flex gap-4 items-start bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black shrink-0">1</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-white">Descarga el paquete</p>
+                            <p class="text-[10px] text-slate-400">Obtén la última versión (ZIP) desde el repositorio oficial.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black shrink-0">2</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-white">Reemplaza los archivos</p>
+                            <p class="text-[10px] text-slate-400">Descomprime y sobrescribe el contenido en tu carpeta de instalación.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black shrink-0">3</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-white">Reinicia el Contenedor</p>
+                            <p class="text-[10px] text-slate-400">Reinicia Xnoppo desde Unraid/Docker para aplicar los cambios.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeManualModal()" class="w-full py-4 rounded-2xl bg-white text-indigo-600 font-black uppercase tracking-wider hover:bg-slate-100 transition-all shadow-xl">Entendido</button>
+            </div>
         </div>
     </div>
 
@@ -572,8 +648,19 @@
                 if (sidebarBtn) {
                     sidebarBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-400');
                     sidebarBtn.classList.remove('bg-white/5', 'text-slate-400');
-                    document.getElementById('sidebarUpdateText').innerText = i18n.t('update_now');
-                    document.getElementById('sidebarUpdateIcon').setAttribute('data-lucide', 'download');
+                    const updateText = document.getElementById('sidebarUpdateText');
+                    if (updateText) updateText.innerText = i18n.t('update_now');
+                    const updateIcon = document.getElementById('sidebarUpdateIcon');
+                    if (updateIcon) updateIcon.setAttribute('data-lucide', 'download');
+                }
+                
+                // Store changelog for modal
+                if (d.changelog) {
+                    sessionStorage.setItem('xnoppo_changelog', d.changelog);
+                    const modalContent = document.getElementById('updateDetailsContent');
+                    if (modalContent) modalContent.innerText = d.changelog;
+                    const modalLabel = document.getElementById('modalVersionLabel');
+                    if (modalLabel) modalLabel.innerText = 'v' + d.latest_version + ' Elite Release';
                 }
             } else {
                 if (banner) banner.classList.add('hidden');
@@ -582,37 +669,57 @@
             lucide.createIcons();
         }
 
+        function openUpdateModal() {
+            const modal = document.getElementById('globalUpdateModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Refresh content if needed
+            const changelog = sessionStorage.getItem('xnoppo_changelog');
+            if (changelog) document.getElementById('updateDetailsContent').innerText = changelog;
+        }
+
+        function closeUpdateModal() {
+            const modal = document.getElementById('globalUpdateModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openManualUpdateModal() {
+            closeUpdateModal();
+            document.getElementById('manualUpdateModal').classList.remove('hidden');
+            document.getElementById('manualUpdateModal').classList.add('flex');
+        }
+
+        function closeManualModal() {
+            document.getElementById('manualUpdateModal').classList.add('hidden');
+            document.getElementById('manualUpdateModal').classList.remove('flex');
+        }
+
         async function handleGlobalUpdateClick() {
+            const text = document.getElementById('sidebarUpdateText');
+            const icon = document.getElementById('sidebarUpdateIcon');
+
+            // If no update known yet, perform a search
             if (!globalUpdateData || !globalUpdateData.new_version) {
-                const btn = document.getElementById('sidebarUpdateBtn');
-                const text = document.getElementById('sidebarUpdateText');
-                const icon = document.getElementById('sidebarUpdateIcon');
-                
-                text.innerText = i18n.t('searching');
-                icon.classList.add('animate-spin');
+                if (text) text.innerText = i18n.t('searching');
+                if (icon) icon.classList.add('animate-spin');
                 
                 await checkGlobalUpdates();
                 
-                icon.classList.remove('animate-spin');
-                if (!globalUpdateData.new_version) {
+                if (icon) icon.classList.remove('animate-spin');
+                
+                // After searching, if it FOUND something, show the modal immediately
+                if (globalUpdateData && globalUpdateData.new_version) {
+                    openUpdateModal();
+                } else if (text) {
                     text.innerText = i18n.t('check_updates');
+                    showToast('Xnoppo está actualizado', 'success');
                 }
                 return;
             }
 
-            if (!confirm(i18n.t('update_now') + '?')) return;
-            
-            try {
-                showToast(i18n.t('updating'), 'info');
-                const r = await fetch('/api/update/run', {method:'POST'});
-                const res = await r.json();
-                if (res.success) {
-                    showToast('Update started!', 'success');
-                    setTimeout(() => location.reload(), 3000);
-                }
-            } catch(e) {
-                showToast('Update failed', 'error');
-            }
+            // If an update was already known, just show the modal
+            openUpdateModal();
         }
 
         // Auto-check on load
