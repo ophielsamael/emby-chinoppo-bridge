@@ -140,8 +140,8 @@ def check_update():
         current = local_data.get("version", "3.0.0")
 
         # 2. Check remote (URL can be customized in config)
-        # For now we use the main development point, but can be changed to User's repo
-        url = config.get("Update_URL", "https://raw.githubusercontent.com/siberian-git/Xnoppo-NextGen/main/version.json")
+        # Pointing to ophielsamael repository
+        url = config.get("Update_URL", "https://raw.githubusercontent.com/ophielsamael/emby-chinoppo-bridge/main/version.json")
         resp = req.get(url, timeout=10)
         resp.raise_for_status()
         remote_data = resp.json()

@@ -2,6 +2,12 @@
 
 Todas las novedades y correcciones del orquestador Xnoppo Elite.
 
+## [3.0.3] - 2026-05-03
+### Añadido
+- **Sincronización de Repositorio**: Redirección del sistema de actualizaciones al repositorio oficial `ophielsamael`.
+- **Branding Elite**: Etiqueta de versión "v3.00 Elite Edition" añadida en la configuración avanzada.
+- **Traducciones AV**: Añadida la descripción para la función 'AV Always ON' en el diccionario i18n.
+
 ## [3.0.2] - 2026-05-03
 ### Añadido
 - **Localización Total (i18n)**: Soporte completo para Inglés y Español en toda la interfaz (Dashboard, Configuración, Remote).
