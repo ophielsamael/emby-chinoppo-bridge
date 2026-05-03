@@ -1,5 +1,6 @@
 {
-    "version": "3.0.2",
-    "release_date": "2026-05-03",
-    "changelog": "Versión Estable Final con soporte Integra, parche ISOs y optimización de velocidad de parada."
+  "version": "3.0.2",
+  "name": "Xnoppo Elite V3",
+  "engine": "Antigravity v1.0",
+  "last_update": "2026-05-03"
 }

@@ -143,10 +143,10 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
     filename = parsed["filename"]
 
     # Synology volume1 detection fix
-    if server_name.lower().startswith("volume"):
+    if str(server_name).lower().startswith("volume"):
         logger.info("Detectado error común de Synology: '%s' no es un servidor, es un volumen.", server_name)
         # Restore the full path for later mounting
-        folder = server_name + "/" + folder if folder else server_name
+        folder = str(server_name) + "/" + str(folder) if folder else str(server_name)
 
     session.server = server_name
     session.folder = folder
@@ -311,7 +311,7 @@ def _orchestrate_playback(session: EmbyHttpClient, data: dict, config: dict):
             logger.info("ISO no ha arrancado tras 20s. Re-enviando comando de reproducción (Auto-Heal)...")
             client.play_file(server_name, play_filename, "0", nfs)
         
-        _notify_user(session, params, f"Xnoppo: Cargando... {timer}s", config, timeout_ms=1999)
+        _notify_user(session, params, "Xnoppo: Cargando... " + str(timer) + "s", config, timeout_ms=1999)
     else:
         logger.warning("Timeout esperando reproducción activa en Oppo (%ds). Abortando.", timeout)
         _cleanup(session, client, config)
@@ -447,9 +447,9 @@ def play_other(session: EmbyHttpClient, data: dict, config: dict):
     filename = parsed["filename"]
 
     actual_server = server_name
-    if server_name.lower().startswith("volume"):
+    if str(server_name).lower().startswith("volume"):
         logger.info("Detectado error común de Synology: '%s' no es un servidor, es un volumen.", server_name)
-        folder = server_name + "/" + folder if folder else server_name
+        folder = str(server_name) + "/" + str(folder) if folder else str(server_name)
         actual_server = ""
         for s in config.get("servers", []):
             if s.get("Emby_Path") and s.get("Oppo_Path"):
